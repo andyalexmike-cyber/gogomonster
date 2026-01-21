@@ -225,27 +225,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- App Start ---
     loadSettingsFromLocalStorage();
     ui.startTitleDuckAnimation();
-
-    // Android WebView detection
-    // Redirect to external browser because features like 'Share' often fail in in-app browsers.
-    (function () {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        const isAndroid = /android/i.test(userAgent);
-        const isInAppBrowser = /wv|KAKAOTALK|NAVER|Instagram|FBAV|FBAN/i.test(userAgent);
-        // Exclude bots to prevent infinite redirection loops since they don't persist sessionStorage.
-        const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(userAgent);
-
-        if (isAndroid && isInAppBrowser && !isBot) {
-            const currentUrl = window.location.href;
-            const intentUrl = `intent://${currentUrl.replace(/https?:\/\//, "")}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-
-            // Use sessionStorage to prevent infinite loops if the user returns or if redirection fails.
-            if (!sessionStorage.getItem("redirectedFromWebView")) {
-                sessionStorage.setItem("redirectedFromWebView", "true");
-                location.href = intentUrl;
-                return;
-            }
-        }
-        sessionStorage.removeItem("redirectedFromWebView");
-    })();
 });
