@@ -684,13 +684,33 @@ export class UI {
     }
 
     downloadImage(blob, fileName) {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
+        // In-app browser workaround
+        // WebViews in apps like KakaoTalk, Naver, Instagram etc. often fail to handle blob: downloads.
+        // We convert to Data URL as a workaround for both iOS and Android in-app browsers.
+        const userAgent = navigator.userAgent;
+        const isInApp = /KAKAOTALK|NAVER|LINE|Instagram|FBAV|FBAN|Twitter|DaumApps/i.test(userAgent);
+
+        if (isInApp) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const url = reader.result;
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            reader.readAsDataURL(blob);
+        } else {
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
         this.showNotification("이미지 복사 실패! 다운로드를 시작합니다.");
     }
 
