@@ -150,43 +150,68 @@ body {
 
 /* Spotlight glow on the zoomed duck */
 .duck-container.camera-focus .duck-sprite {
-  filter: drop-shadow(0 0 6px #ffe040) drop-shadow(0 0 6px #ffe040)
-    drop-shadow(0 0 16px rgba(255, 180, 0, 0.7)) !important;
-  transform: scale(1.15) !important;
+  filter: drop-shadow(0 0 4px #ffe040) drop-shadow(0 0 10px rgba(255, 180, 0, 0.6)) !important;
+  transform: scale(1.12) !important;
   transition: transform 0.2s ease-out, filter 0.2s ease-out;
 }
 
-.duck-container.camera-focus::before {
+/* Pixel-art sparkle dots around the duck */
+.duck-container.camera-focus::before,
+.duck-container.camera-focus::after {
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: 30px;
-  transform: translate(-50%, 0);
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 230, 80, 0.45) 0%,
-    rgba(255, 200, 40, 0.2) 50%,
-    transparent 70%
-  );
-  animation: camera-focus-ring 0.9s ease-in-out infinite;
-  z-index: 0;
   pointer-events: none;
+  z-index: 5;
+  image-rendering: pixelated;
 }
 
-@keyframes camera-focus-ring {
-  0%,
-  100% {
-    transform: translate(-50%, 0) scale(1);
-    opacity: 0.8;
-  }
+/* Pixel sparkle ring using box-shadow dots */
+.duck-container.camera-focus::before {
+  left: 30px;
+  bottom: 35px;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  animation: pixel-sparkle-a 0.8s steps(1) infinite;
+  box-shadow:
+    /* ring of pixel dots around the duck */
+    -18px -28px 0 0 #ffe040,
+     18px -28px 0 0 #ffa500,
+    -26px  -8px 0 0 #ffa500,
+     26px  -8px 0 0 #ffe040,
+    -22px  14px 0 0 #ffe040,
+     22px  14px 0 0 #ffa500,
+      0px -32px 0 0 #fff,
+      0px  18px 0 0 #fff;
+}
 
-  50% {
-    transform: translate(-50%, 0) scale(1.2);
-    opacity: 1;
-  }
+.duck-container.camera-focus::after {
+  left: 30px;
+  bottom: 35px;
+  width: 4px;
+  height: 4px;
+  background: transparent;
+  animation: pixel-sparkle-b 0.8s steps(1) infinite;
+  box-shadow:
+    -24px -18px 0 0 #fff,
+     24px -18px 0 0 #fff,
+    -12px -32px 0 0 #ffa500,
+     12px -32px 0 0 #ffe040,
+    -28px   2px 0 0 #ffe040,
+     28px   2px 0 0 #ffa500,
+    -12px  18px 0 0 #ffa500,
+     12px  18px 0 0 #ffe040;
+}
+
+/* Two-frame alternating sparkle for pixel-art feel */
+@keyframes pixel-sparkle-a {
+  0%   { opacity: 1; }
+  50%  { opacity: 0; }
+}
+
+@keyframes pixel-sparkle-b {
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
 }
 
 /* Countdown modal style */
