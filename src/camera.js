@@ -19,6 +19,7 @@ export class Camera {
         this.isSeventyPercentLockActive = false;
         this.minHoldTimer = 0;
         this.lastFrameRequest = { target: null, priority: 0, reason: "" }; // Track previous frame's winner
+
     }
 
     get target() {
@@ -27,8 +28,10 @@ export class Camera {
 
     set target(value) {
         if (this._target !== value) {
-
+            const wasSpotlightActive = this._target && this._target.element.classList.contains("camera-focus");
+            if (this._target) this._target.element.classList.remove("camera-focus");
             this._target = value;
+            if (wasSpotlightActive && this._target) this._target.element.classList.add("camera-focus");
         }
     }
 
@@ -50,6 +53,7 @@ export class Camera {
             this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_OUT_DURATION / 1000}s ease-in-out`;
         }
         this.uiContainer.style.transform = "translate(0px, 0px) scale(1)";
+        this._hideSpotlight();
     }
 
     requestZoom(target, priority, reason) {
@@ -86,6 +90,7 @@ export class Camera {
             this.timer = CONFIG.ZOOM_DURATION;
             this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_DURATION / 1000}s ease-in-out`;
             this.applyTransform();
+            this._showSpotlight();
             return;
         }
 
@@ -181,12 +186,14 @@ export class Camera {
                         this.timer = CONFIG.ZOOM_OUT_DURATION;
                         this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_OUT_DURATION / 1000}s ease-in-out`;
                         this.uiContainer.style.transform = "translate(0px, 0px) scale(1)";
+                        this._hideSpotlight();
                     }
                 } else if (this.timer <= 0) {
                     this.state = CAMERA_STATE.ZOOMING_OUT;
                     this.timer = CONFIG.ZOOM_OUT_DURATION;
                     this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_OUT_DURATION / 1000}s ease-in-out`;
                     this.uiContainer.style.transform = "translate(0px, 0px) scale(1)";
+                    this._hideSpotlight();
                 }
             }
             this.applyTransform();
@@ -226,42 +233,98 @@ export class Camera {
         }
     }
 
+    _showSpotlight() {
+        if (this.target) this.target.element.classList.add("camera-focus");
+    }
+
+    _hideSpotlight() {
+        if (this._target) this._target.element.classList.remove("camera-focus");
+    }
+
+    /**
+     * Get element's untransformed position relative to the container using offsetLeft/offsetTop chain.
+     * These properties are not affected by CSS transforms, avoiding feedback loops.
+     */
+    _getPositionInContainer(element) {
+        let x = 0, y = 0;
+        let el = element;
+        while (el && el !== this.uiContainer) {
+            x += el.offsetLeft;
+            y += el.offsetTop;
+            el = el.offsetParent;
+        }
+        return { x, y };
+    }
+
+    /**
+     * Get element's untransformed position on the page using offsetLeft/offsetTop chain.
+     */
+    _getPagePosition(element) {
+        let x = 0, y = 0;
+        let el = element;
+        while (el) {
+            x += el.offsetLeft;
+            y += el.offsetTop;
+            el = el.offsetParent;
+        }
+        return { x, y };
+    }
+
     applyTransform() {
         if (!this.target) return;
 
-        const trackRect = this.uiContainer.getBoundingClientRect();
-        const duckRect = this.target.element.getBoundingClientRect();
+        const scale = CONFIG.IN_RACE_ZOOM_SCALE;
 
-        const containerCenterX = trackRect.width / 2;
-        const containerCenterY = trackRect.height / 2;
-        const duckRelativeX = duckRect.left - trackRect.left + duckRect.width / 2;
-        const duckRelativeY = duckRect.top - trackRect.top + duckRect.height / 2;
+        // Use offset properties (unaffected by CSS transforms) to get untransformed positions
+        const duckPos = this._getPositionInContainer(this.target.element);
+        const duckCenterX = duckPos.x + this.target.element.offsetWidth / 2;
+        const duckCenterY = duckPos.y + this.target.element.offsetHeight / 2;
 
-        const translateX = containerCenterX - duckRelativeX;
-        const translateY = containerCenterY - duckRelativeY;
+        // Transform origin (default: 50% 50% = center of element)
+        const originX = this.uiContainer.offsetWidth / 2;
+        const originY = this.uiContainer.offsetHeight / 2;
 
-        this.uiContainer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${CONFIG.IN_RACE_ZOOM_SCALE})`;
+        // Container's untransformed page position
+        const containerPos = this._getPagePosition(this.uiContainer);
+
+        // Viewport center in container's untransformed coordinate system
+        const vpCenterInContainerX = window.scrollX + window.innerWidth / 2 - containerPos.x;
+        const vpCenterInContainerY = window.scrollY + window.innerHeight / 2 - containerPos.y;
+
+        // Correct translation: accounts for both scale and scroll position
+        // Visual position of point P = origin + scale*(P - origin) + translate
+        // Solving for translate to place duck at viewport center:
+        const translateX = (vpCenterInContainerX - originX) + scale * (originX - duckCenterX);
+        const translateY = (vpCenterInContainerY - originY) + scale * (originY - duckCenterY);
+
+        this.uiContainer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     }
 
     applyZoomToWinnerTransform(participant) {
         if (!participant) return;
 
-        const trackRect = this.uiContainer.getBoundingClientRect();
-        const duckRect = participant.element.getBoundingClientRect();
-
         this.uiContainer.style.transformOrigin = "0 0";
 
-        const containerCenterX = trackRect.width / 2;
-        const containerCenterY = trackRect.height / 2;
-        const duckRelativeX = duckRect.left - trackRect.left + duckRect.width / 2;
-        const duckRelativeY = duckRect.top - trackRect.top + duckRect.height / 2;
+        const scale = CONFIG.HIGHLIGHT_ZOOM_SCALE;
 
-        const t1x = -duckRelativeX;
-        const t1y = -duckRelativeY;
-        const t2x = containerCenterX;
-        const t2y = containerCenterY;
+        // Use offset properties for untransformed positions
+        const duckPos = this._getPositionInContainer(participant.element);
+        const duckCenterX = duckPos.x + participant.element.offsetWidth / 2;
+        const duckCenterY = duckPos.y + participant.element.offsetHeight / 2;
 
-        this.uiContainer.style.transform = `translate(${t2x}px, ${t2y}px) scale(${CONFIG.HIGHLIGHT_ZOOM_SCALE}) translate(${t1x}px, ${t1y}px)`;
+        // Container's untransformed page position
+        const containerPos = this._getPagePosition(this.uiContainer);
+
+        // Viewport center in container's untransformed coordinate system
+        const vpCenterInContainerX = window.scrollX + window.innerWidth / 2 - containerPos.x;
+        const vpCenterInContainerY = window.scrollY + window.innerHeight / 2 - containerPos.y;
+
+        const t1x = -duckCenterX;
+        const t1y = -duckCenterY;
+        const t2x = vpCenterInContainerX;
+        const t2y = vpCenterInContainerY;
+
+        this.uiContainer.style.transform = `translate(${t2x}px, ${t2y}px) scale(${scale}) translate(${t1x}px, ${t1y}px)`;
     }
 
     resetRequest() {
