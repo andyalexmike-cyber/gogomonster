@@ -519,6 +519,8 @@ export class UI {
             this.resultsModal.style.top = `${this.raceTrackContainer.offsetTop}px`;
         }
 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         this.playClapSound();
         this.resultsModal.classList.remove("hidden");
         this.resultsModalOverlay.classList.remove("hidden");
