@@ -137,11 +137,56 @@ body {
 }
 
 /* Camera Logic: z-index and transform origin */
+#main-ui-container {
+  position: relative;
+}
+
 #race-track-container {
   position: relative;
   z-index: 1;
   /* Set the zoom-in/out origin to the center */
   transform-origin: 50% 50%;
+}
+
+/* Spotlight glow on the zoomed duck */
+.duck-container.camera-focus .duck-sprite {
+  filter: drop-shadow(0 0 6px #ffe040) drop-shadow(0 0 6px #ffe040)
+    drop-shadow(0 0 16px rgba(255, 180, 0, 0.7)) !important;
+  transform: scale(1.15) !important;
+  transition: transform 0.2s ease-out, filter 0.2s ease-out;
+}
+
+.duck-container.camera-focus::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translate(-50%, 0);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 230, 80, 0.45) 0%,
+    rgba(255, 200, 40, 0.2) 50%,
+    transparent 70%
+  );
+  animation: camera-focus-ring 0.9s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes camera-focus-ring {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translate(-50%, 0) scale(1.2);
+    opacity: 1;
+  }
 }
 
 /* Countdown modal style */
