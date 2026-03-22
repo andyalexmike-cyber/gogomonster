@@ -226,6 +226,27 @@ body {
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
+/* Fixed viewport-center container for start button and countdown text */
+#viewport-center-anchor {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 40;
+  pointer-events: none;
+}
+
+#viewport-center-anchor.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#viewport-center-anchor > * {
+  pointer-events: auto;
+}
+
 /* Duck speech bubble text */
 .duck-speech {
   position: absolute;

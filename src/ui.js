@@ -241,10 +241,18 @@ export class UI {
 
     showRealStartOverlay() {
         this.realStartOverlay.classList.remove("hidden");
+        // Move button to fixed viewport-center anchor (outside transform parent)
+        const anchor = document.getElementById("viewport-center-anchor");
+        anchor.appendChild(this.realStartBtn);
+        anchor.classList.add("active");
     }
 
     hideRealStartOverlay() {
         this.realStartOverlay.classList.add("hidden");
+        // Return button to its original overlay
+        const anchor = document.getElementById("viewport-center-anchor");
+        anchor.classList.remove("active");
+        this.realStartOverlay.appendChild(this.realStartBtn);
     }
 
     showCountdown(count) {
@@ -257,10 +265,18 @@ export class UI {
             this.countdownText.classList.remove("text-5xl");
             this.countdownText.classList.add("text-7xl");
         }
+        // Move countdown text to fixed viewport-center anchor
+        const anchor = document.getElementById("viewport-center-anchor");
+        anchor.appendChild(this.countdownText);
+        anchor.classList.add("active");
     }
 
     hideCountdown() {
         this.countdownOverlay.classList.add("hidden");
+        // Return countdown text to its original overlay
+        const anchor = document.getElementById("viewport-center-anchor");
+        anchor.classList.remove("active");
+        this.countdownOverlay.appendChild(this.countdownText);
     }
 
     // --- Race Visuals ---
