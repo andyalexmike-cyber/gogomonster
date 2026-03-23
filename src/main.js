@@ -9,6 +9,7 @@ import { Camera } from './camera.js';
 import { Game } from './game.js';
 import { UI } from './ui.js';
 import { STORAGE_KEYS, PARTICIPANT_STATE } from './const.js';
+import { DebugOverlay } from './debug-overlay.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     // --- Initialization ---
@@ -19,6 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const camera = new Camera(ui.mainUiContainer);
     const game = new Game(ui, camera);
+
+    // Debug overlay (activate with #debug in URL)
+    const debugOverlay = new DebugOverlay(camera, ui.mainUiContainer);
+    debugOverlay.init();
+    game.debugOverlay = debugOverlay;
 
     // --- Global Share Functions (attached to window for HTML access) ---
 

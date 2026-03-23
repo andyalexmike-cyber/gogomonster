@@ -28,6 +28,9 @@ export class Game {
 
         // Camera Lock Override
         this.lockOverrideTimer = 0;
+
+        // Debug overlay (set externally)
+        this.debugOverlay = null;
     }
 
     setupRace(participantsData, drawDirection, drawRank) {
@@ -67,6 +70,8 @@ export class Game {
     }
 
     updateRace() {
+        if (this.debugOverlay) this.debugOverlay.recordTick();
+
         const tickDuration = CONFIG.TICK_RATE;
 
         this.camera.resetRequest();
