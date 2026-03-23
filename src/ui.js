@@ -3,8 +3,9 @@
  * Copyright (c) 2025 devinjeon (Hyojun Jeon)
  */
 import html2canvas from 'html2canvas';
-import { CONFIG, SPEECH_LINES } from './config.js';
+import { CONFIG } from './config.js';
 import { PARTICIPANT_STATE, DRAW_DIRECTION } from './const.js';
+import { t, getSpeechLines } from './i18n.js';
 
 export class UI {
     constructor() {
@@ -52,7 +53,7 @@ export class UI {
 
         // Share Config
         this.shareUrl = window.location.href.split("?")[0];
-        this.shareTitle = "Go-Go! Duck Roulette - 달려라! 오리 룰렛";
+        this.shareTitle = t('share.title');
 
         // Animation Intervals
         this.titleDuckAnimInterval = null;
@@ -189,7 +190,7 @@ export class UI {
             for (let i = 1; i <= totalParticipants; i++) {
                 const option = document.createElement("option");
                 option.value = i;
-                option.textContent = i === 1 ? "1등만" : `${i}등까지`;
+                option.textContent = i === 1 ? t('rank.only', i) : t('rank.upto', i);
                 this.drawRankSelect.appendChild(option);
             }
             if (!isNaN(previousValue)) {
@@ -200,7 +201,7 @@ export class UI {
         } else {
             const option = document.createElement("option");
             option.value = "1";
-            option.textContent = "1등만";
+            option.textContent = t('rank.only', 1);
             this.drawRankSelect.appendChild(option);
         }
     }
@@ -224,9 +225,11 @@ export class UI {
         this.resultsModalOverlay.classList.add("hidden");
         if (this.shareButtons) this.shareButtons.classList.add("hidden");
 
-        // Hide BMC button
+        // Hide BMC button and language switcher
         const bmcButton = document.getElementById("bmc-button-container");
         if (bmcButton) bmcButton.style.display = "none";
+        const langToggle = document.getElementById("lang-toggle-container");
+        if (langToggle) langToggle.style.display = "none";
 
         // Close credits
         if (this.creditsDetail) this.creditsDetail.classList.add('hidden');
@@ -243,6 +246,8 @@ export class UI {
 
         const bmcButton = document.getElementById("bmc-button-container");
         if (bmcButton) bmcButton.style.display = "block";
+        const langToggle = document.getElementById("lang-toggle-container");
+        if (langToggle) langToggle.style.display = "flex";
     }
 
     _positionAnchorAtViewportCenter(anchor) {
@@ -346,7 +351,7 @@ export class UI {
         p.spriteElement.src = CONFIG.ASSETS.WALKING;
         this.showPermanentSpeech(p, "finishing");
 
-        p.rankElement.textContent = ` (${p.currentRank}등)`;
+        p.rankElement.textContent = ` ${t('rank.suffix', p.currentRank)}`;
         this.resetRankVisuals(p);
     }
 
@@ -361,7 +366,7 @@ export class UI {
 
     updateRankVisuals(p, drawDirection, drawRank, totalParticipants) {
         if (p.rankElement && p.state !== PARTICIPANT_STATE.FINISHED && p.state !== PARTICIPANT_STATE.STOPPED) {
-            p.rankElement.textContent = ` (${p.currentRank}등)`;
+            p.rankElement.textContent = ` ${t('rank.suffix', p.currentRank)}`;
 
             const isFrontWinner = drawDirection === DRAW_DIRECTION.FRONT && p.currentRank <= drawRank;
             const isBackWinner = drawDirection === DRAW_DIRECTION.BACK && p.currentRank >= totalParticipants - drawRank + 1;
@@ -395,9 +400,10 @@ export class UI {
     showSpeech(participant, key, duration) {
         if (participant.speechTimer) clearTimeout(participant.speechTimer);
 
+        const speechLines = getSpeechLines();
         let pool = this.availableSpeechLines[key];
         if (!pool || pool.length === 0) {
-            this.availableSpeechLines[key] = [...SPEECH_LINES[key]];
+            this.availableSpeechLines[key] = [...speechLines[key]];
             pool = this.availableSpeechLines[key];
             if (!pool || pool.length === 0) return;
         }
@@ -418,9 +424,10 @@ export class UI {
         if (participant.speechTimer) clearTimeout(participant.speechTimer);
         participant.speechTimer = null;
 
+        const speechLines = getSpeechLines();
         let pool = this.availableSpeechLines[key];
         if (!pool || pool.length === 0) {
-            this.availableSpeechLines[key] = [...SPEECH_LINES[key]];
+            this.availableSpeechLines[key] = [...speechLines[key]];
             pool = this.availableSpeechLines[key];
             if (!pool || pool.length === 0) return;
         }
@@ -433,15 +440,16 @@ export class UI {
     }
 
     resetSpeechPools() {
+        const speechLines = getSpeechLines();
         this.availableSpeechLines = {
-            resting: [...SPEECH_LINES.resting],
-            boosting: [...SPEECH_LINES.boosting],
-            flying: [...SPEECH_LINES.flying],
-            finishing: [...SPEECH_LINES.finishing],
-            superBoosting: [...SPEECH_LINES.superBoosting],
-            distraction: [...SPEECH_LINES.distraction],
-            confusion: [...SPEECH_LINES.confusion],
-            confusionEnd: [...SPEECH_LINES.confusionEnd],
+            resting: [...speechLines.resting],
+            boosting: [...speechLines.boosting],
+            flying: [...speechLines.flying],
+            finishing: [...speechLines.finishing],
+            superBoosting: [...speechLines.superBoosting],
+            distraction: [...speechLines.distraction],
+            confusion: [...speechLines.confusion],
+            confusionEnd: [...speechLines.confusionEnd],
         };
     }
 
@@ -513,12 +521,12 @@ export class UI {
         let title = "";
 
         if (drawDirection === DRAW_DIRECTION.FRONT) {
-            const rankText = drawRank == 1 ? "1등만" : `${drawRank}등까지`;
-            title = `🎉 앞에서 ${rankText} 당첨! 🎉`;
+            const rankText = drawRank == 1 ? t('rank.only', 1) : t('rank.upto', drawRank);
+            title = t('result.frontWin', rankText);
             winners = sortedList.slice(0, drawRank);
         } else {
-            const rankText = drawRank == 1 ? "1등만" : `${drawRank}등까지`;
-            title = `🎉 뒤에서 ${rankText} 당첨! 🎉`;
+            const rankText = drawRank == 1 ? t('rank.only', 1) : t('rank.upto', drawRank);
+            title = t('result.backWin', rankText);
             winners = sortedList.slice(-drawRank);
         }
 
@@ -560,12 +568,12 @@ export class UI {
 
             winners.forEach(winner => {
                 const li = document.createElement("li");
-                li.innerHTML = `<strong class="font-bold">${winner.currentRank}등</strong><br><span style="color: ${winner.nameColor};">${winner.name}</span>`;
+                li.innerHTML = `<strong class="font-bold">${t('rank.display', winner.currentRank)}</strong><br><span style="color: ${winner.nameColor};">${winner.name}</span>`;
                 this.resultsList.appendChild(li);
                 winner.element.classList.add("duck-winner");
             });
         } else {
-            this.resultsList.innerHTML = "<li>당첨자가 없습니다.</li>";
+            this.resultsList.innerHTML = `<li>${t('result.noWinners')}</li>`;
         }
 
         if (this.resultsModal && this.raceTrackContainer) {
@@ -642,7 +650,7 @@ export class UI {
     shareInstagram() {
         if (typeof gtag === "function") gtag("event", "share_instagram");
         this.copyLink();
-        this.showNotification("링크가 복사되었습니다! 인스타그램에서 공유해보세요.");
+        this.showNotification(t('share.instagram'));
     }
 
     copyLink(urlToCopy = null) {
@@ -658,10 +666,10 @@ export class UI {
 
         try {
             document.execCommand("copy");
-            this.showNotification("링크 복사 완료!");
+            this.showNotification(t('share.linkCopied'));
         } catch (err) {
             console.error("Failed to copy link:", err);
-            alert("링크 복사에 실패했습니다.");
+            alert(t('share.linkFailed'));
         }
         document.body.removeChild(tempTextArea);
     }
@@ -671,7 +679,7 @@ export class UI {
 
         const captureTarget = this.mainUiContainer;
         if (!captureTarget) {
-            alert("결과 영역을 찾을 수 없습니다.");
+            alert(t('share.noTarget'));
             return;
         }
 
@@ -702,7 +710,7 @@ export class UI {
 
             const imageBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
             if (!imageBlob) {
-                alert("결과 이미지 생성에 실패했습니다.");
+                alert(t('share.imageFailed'));
                 return;
             }
 
@@ -711,7 +719,7 @@ export class UI {
             const shareData = {
                 files: [imageFile],
                 title: "Go-Go! Duck Roulette",
-                text: "경주 추첨 결과를 확인해 보세요!\n\nGo-Go! Duck Roulette 바로가기:\nhttps://hyojun.me/gogoduck",
+                text: t('share.text'),
             };
 
             if (navigator.canShare && navigator.canShare({ files: [imageFile] })) {
@@ -719,17 +727,17 @@ export class UI {
                     await navigator.share(shareData);
                 } catch (err) {
                     if (err.name !== "AbortError") {
-                        alert("결과 이미지를 다운로드합니다. 친구와 공유해보세요!");
+                        alert(t('share.downloadAlert'));
                         this.downloadImage(imageBlob, fileName);
                     }
                 }
             } else {
-                alert("결과 이미지를 다운로드합니다. 친구와 공유해보세요!");
+                alert(t('share.downloadAlert'));
                 this.downloadImage(imageBlob, fileName);
             }
         } catch (err) {
             console.error("Error capturing or sharing results:", err);
-            alert("결과 이미지를 캡처하거나 공유하는 데 실패했습니다.");
+            alert(t('share.captureFailed'));
             if (watermark) watermark.classList.add("hidden");
             if (resultButtons) resultButtons.classList.remove("hidden");
             if (feedbackLink) feedbackLink.classList.remove("hidden");
@@ -766,12 +774,12 @@ export class UI {
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
         }
-        this.showNotification("이미지 복사 실패! 다운로드를 시작합니다.");
+        this.showNotification(t('share.downloadStart'));
     }
 
     showNotification(message, duration = 2500) {
         if (this.copyAlert) {
-            const originalText = "링크 복사 완료!";
+            const originalText = t('share.linkCopied');
             this.copyAlert.textContent = message;
             this.copyAlert.classList.remove("opacity-0", "translate-y-2");
             this.copyAlert.classList.add("opacity-100", "translate-y-0");
@@ -878,7 +886,7 @@ export class UI {
             row.style.top = `${(rank - 1) * ROW_HEIGHT}px`;
 
             // Update rank text
-            rankSpan.textContent = `${rank}등`;
+            rankSpan.textContent = t('rank.display', rank);
 
             // Winner styling
             const isFrontWinner = drawDirection === DRAW_DIRECTION.FRONT && rank <= drawRank;

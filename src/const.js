@@ -20,6 +20,7 @@ export const STORAGE_KEYS = {
     PARTICIPANTS: "duckRaceParticipants",
     DRAW_DIRECTION: "duckRaceDrawDirection",
     DRAW_RANK: "duckRaceDrawRank",
+    LANGUAGE: "duckRaceLanguage",
 };
 
 export const CAMERA_STATE = {

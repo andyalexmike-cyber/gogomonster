@@ -13,6 +13,7 @@ module.exports = {
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '/',
         clean: true,
     },
     module: {
@@ -31,6 +32,44 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './index.html',
             filename: 'index.html',
+            templateParameters: {
+                lang: 'ko',
+                seo: {
+                    title: '오리 경주 추첨 게임 - 달려라! 오리 레이스 뽑기 | Go-Go! Duck Roulette',
+                    description: '오리 경주 추첨 게임! 오리들이 달리기 레이스를 펼치는 랜덤 뽑기 룰렛입니다. 커피 내기, 이벤트 당첨자 선정, 발표 순서 정하기 등에 활용해 보세요!',
+                    keywords: '오리 경주, 오리 레이스, 오리 달리기, 오리 룰렛, 오리 경주 추첨 게임, 오리 레이스 뽑기, 오리 달리기 뽑기, 오리 경주 게임, 오리 레이스 게임, 오리 달리기 게임, duck roulette, 랜덤 추첨, 순위 추첨, 뽑기, 커피 내기, 발표 순서, 제비뽑기, 이벤트 당첨자',
+                    appName: '오리 경주 추첨 게임 - Go-Go! Duck Roulette',
+                    url: 'https://hyojun.me/gogoduck',
+                },
+            },
+        }),
+        new HtmlWebpackPlugin({
+            template: './index.html',
+            filename: 'en/index.html',
+            templateParameters: {
+                lang: 'en',
+                seo: {
+                    title: 'Go-Go! Duck Roulette - Random Duck Race Lottery Game',
+                    description: 'A random lottery game powered by duck races! Watch unpredictable ducks race and pick winners. Great for coffee bets, event draws, presentation order, and more!',
+                    keywords: 'duck race, duck roulette, random lottery, duck racing game, random picker, random draw, team picker, coffee bet, event winner, presentation order',
+                    appName: 'Go-Go! Duck Roulette',
+                    url: 'https://hyojun.me/gogoduck/en/',
+                },
+            },
+        }),
+        new HtmlWebpackPlugin({
+            template: './index.html',
+            filename: 'ko/index.html',
+            templateParameters: {
+                lang: 'ko',
+                seo: {
+                    title: '오리 경주 추첨 게임 - 달려라! 오리 레이스 뽑기 | Go-Go! Duck Roulette',
+                    description: '오리 경주 추첨 게임! 오리들이 달리기 레이스를 펼치는 랜덤 뽑기 룰렛입니다. 커피 내기, 이벤트 당첨자 선정, 발표 순서 정하기 등에 활용해 보세요!',
+                    keywords: '오리 경주, 오리 레이스, 오리 달리기, 오리 룰렛, 오리 경주 추첨 게임, 오리 레이스 뽑기, 오리 달리기 뽑기, 오리 경주 게임, 오리 레이스 게임, 오리 달리기 게임, duck roulette, 랜덤 추첨, 순위 추첨, 뽑기, 커피 내기, 발표 순서, 제비뽑기, 이벤트 당첨자',
+                    appName: '오리 경주 추첨 게임 - Go-Go! Duck Roulette',
+                    url: 'https://hyojun.me/gogoduck/ko/',
+                },
+            },
         }),
         new CopyWebpackPlugin({
             patterns: [
@@ -58,6 +97,12 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
+        historyApiFallback: {
+            rewrites: [
+                { from: /^\/en\/?$/, to: '/en/index.html' },
+                { from: /^\/ko\/?$/, to: '/ko/index.html' },
+            ],
+        },
     },
     performance: {
         maxAssetSize: 2000000, // 2MB

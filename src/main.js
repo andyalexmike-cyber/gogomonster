@@ -10,9 +10,11 @@ import { Game } from './game.js';
 import { UI } from './ui.js';
 import { STORAGE_KEYS, PARTICIPANT_STATE } from './const.js';
 import { DebugOverlay } from './debug-overlay.js';
+import { initI18n, t, getLang, setLang, switchLang } from './i18n.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     // --- Initialization ---
+    initI18n();
     const ui = new UI();
 
     // Preload assets immediately
@@ -48,6 +50,25 @@ document.addEventListener("DOMContentLoaded", () => {
         ui.toggleCredits();
     };
 
+    // --- Language Toggle ---
+    const langBtnEn = document.getElementById("lang-btn-en");
+    const langBtnKo = document.getElementById("lang-btn-ko");
+
+    function updateLangButtons() {
+        const lang = getLang();
+        if (lang === 'en') {
+            langBtnEn.className = "px-2 py-1 transition-colors bg-cyan-500 text-white font-bold";
+            langBtnKo.className = "px-2 py-1 transition-colors text-gray-400 hover:text-gray-600 hover:bg-gray-100";
+        } else {
+            langBtnKo.className = "px-2 py-1 transition-colors bg-cyan-500 text-white font-bold";
+            langBtnEn.className = "px-2 py-1 transition-colors text-gray-400 hover:text-gray-600 hover:bg-gray-100";
+        }
+    }
+    updateLangButtons();
+
+    langBtnEn.addEventListener("click", () => switchLang('en'));
+    langBtnKo.addEventListener("click", () => switchLang('ko'));
+
     // --- Event Listeners ---
 
     ui.setupEventListeners({
@@ -77,11 +98,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (savedParticipants !== null) {
             ui.setParticipantsInput(savedParticipants);
             if (savedParticipants === "") {
-                ui.setParticipantsPlaceholder("예) " + CONFIG.DEFAULT_PARTICIPANT_LIST);
+                ui.setParticipantsPlaceholder(t('placeholder.example', t('default.participants')));
             }
         } else {
-            ui.setParticipantsInput(CONFIG.DEFAULT_PARTICIPANT_LIST);
-            localStorage.setItem(STORAGE_KEYS.PARTICIPANTS, CONFIG.DEFAULT_PARTICIPANT_LIST);
+            const defaultList = t('default.participants');
+            ui.setParticipantsInput(defaultList);
+            localStorage.setItem(STORAGE_KEYS.PARTICIPANTS, defaultList);
         }
 
         if (savedDrawDirection) {
@@ -98,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(STORAGE_KEYS.DRAW_RANK, ui.getDrawRank());
 
         if (currentValue === "") {
-            ui.setParticipantsPlaceholder("예) " + CONFIG.DEFAULT_PARTICIPANT_LIST);
+            ui.setParticipantsPlaceholder(t('placeholder.example', t('default.participants')));
         }
     }
 
@@ -147,10 +169,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const names = parseParticipants();
 
         if (names.length === 0) {
-            ui.showInputError("참가자를 1명 이상 입력해주세요!");
+            ui.showInputError(t('error.noParticipants'));
             return;
         }
-        ui.clearInputError("예) " + CONFIG.DEFAULT_PARTICIPANT_LIST);
+        ui.clearInputError(t('placeholder.example', t('default.participants')));
 
         if (typeof gtag === "function") {
             gtag("event", "setup_complete_race_ready", {
