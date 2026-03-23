@@ -245,6 +245,7 @@ body {
 
 #viewport-center-anchor > * {
   pointer-events: auto;
+  white-space: nowrap;
 }
 
 /* Duck speech bubble text */

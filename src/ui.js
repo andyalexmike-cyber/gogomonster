@@ -240,11 +240,11 @@ export class UI {
     }
 
     showRealStartOverlay() {
-        this.realStartOverlay.classList.remove("hidden");
-        // Move button to fixed viewport-center anchor (outside transform parent)
+        // Move button to fixed viewport-center anchor BEFORE showing overlay
         const anchor = document.getElementById("viewport-center-anchor");
         anchor.appendChild(this.realStartBtn);
         anchor.classList.add("active");
+        this.realStartOverlay.classList.remove("hidden");
     }
 
     hideRealStartOverlay() {
@@ -256,7 +256,6 @@ export class UI {
     }
 
     showCountdown(count) {
-        this.countdownOverlay.classList.remove("hidden");
         this.countdownText.textContent = count;
         if (count === "Start!") {
             this.countdownText.classList.remove("text-7xl");
@@ -265,10 +264,11 @@ export class UI {
             this.countdownText.classList.remove("text-5xl");
             this.countdownText.classList.add("text-7xl");
         }
-        // Move countdown text to fixed viewport-center anchor
+        // Move countdown text to fixed viewport-center anchor BEFORE showing overlay
         const anchor = document.getElementById("viewport-center-anchor");
         anchor.appendChild(this.countdownText);
         anchor.classList.add("active");
+        this.countdownOverlay.classList.remove("hidden");
     }
 
     hideCountdown() {
@@ -505,12 +505,30 @@ export class UI {
         }
 
         this.resultsTitle.innerHTML = title;
-        if (this.raceFinishOverlay) this.raceFinishOverlay.classList.remove("hidden");
+        if (this.raceFinishOverlay) {
+            // Move finish text to fixed viewport-center anchor BEFORE showing overlay
+            const finishText = document.getElementById("race-finish-text");
+            const anchor = document.getElementById("viewport-center-anchor");
+            if (finishText && anchor) {
+                anchor.appendChild(finishText);
+                anchor.classList.add("active");
+            }
+            this.raceFinishOverlay.classList.remove("hidden");
+        }
 
         this.fadeOutBGM();
 
         await new Promise(resolve => setTimeout(resolve, 1500));
-        if (this.raceFinishOverlay) this.raceFinishOverlay.classList.add("hidden");
+        if (this.raceFinishOverlay) {
+            this.raceFinishOverlay.classList.add("hidden");
+            // Return finish text to its original overlay
+            const finishText = document.getElementById("race-finish-text");
+            const anchor = document.getElementById("viewport-center-anchor");
+            if (finishText && anchor) {
+                anchor.classList.remove("active");
+                this.raceFinishOverlay.appendChild(finishText);
+            }
+        }
 
         for (const winner of winners) {
             await this.zoomAndHighlightWinner(winner, camera);
