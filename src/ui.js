@@ -239,10 +239,21 @@ export class UI {
         if (bmcButton) bmcButton.style.display = "block";
     }
 
+    _positionAnchorAtViewportCenter(anchor) {
+        // Set fixed pixel position once — CSS top:50% shifts on mobile when
+        // the address bar hides/shows and changes viewport height
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        anchor.style.left = cx + 'px';
+        anchor.style.top = cy + 'px';
+        anchor.style.transform = 'translate(-50%, -50%)';
+    }
+
     showRealStartOverlay() {
         // Move button to fixed viewport-center anchor BEFORE showing overlay
         const anchor = document.getElementById("viewport-center-anchor");
         anchor.appendChild(this.realStartBtn);
+        this._positionAnchorAtViewportCenter(anchor);
         anchor.classList.add("active");
         this.realStartOverlay.classList.remove("hidden");
     }
@@ -267,6 +278,7 @@ export class UI {
         // Move countdown text to fixed viewport-center anchor BEFORE showing overlay
         const anchor = document.getElementById("viewport-center-anchor");
         anchor.appendChild(this.countdownText);
+        this._positionAnchorAtViewportCenter(anchor);
         anchor.classList.add("active");
         this.countdownOverlay.classList.remove("hidden");
     }
@@ -511,6 +523,7 @@ export class UI {
             const anchor = document.getElementById("viewport-center-anchor");
             if (finishText && anchor) {
                 anchor.appendChild(finishText);
+                this._positionAnchorAtViewportCenter(anchor);
                 anchor.classList.add("active");
             }
             this.raceFinishOverlay.classList.remove("hidden");

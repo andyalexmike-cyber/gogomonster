@@ -226,13 +226,12 @@ body {
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-/* Fixed viewport-center container for start button and countdown text */
+/* Fixed viewport-center container for start button and countdown text.
+   Position (top/left/transform) is set via JS to use fixed pixel values —
+   CSS percentages shift on mobile when the address bar hides/shows. */
 #viewport-center-anchor {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 40;
   pointer-events: none;
 }
