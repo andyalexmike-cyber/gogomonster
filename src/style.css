@@ -575,7 +575,13 @@ body {
 
 #live-leaderboard .lb-row.lb-winner {
   font-weight: 800;
-  font-size: 14px;
+  font-size: 15px;
+  animation: lb-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes lb-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
 }
 
 #live-leaderboard .lb-rank {
