@@ -550,6 +550,46 @@ body {
   transform: scaleX(-1);
 }
 
+/* Live Leaderboard — positioned via JS to work around mobile viewport inflation */
+#live-leaderboard {
+  position: fixed !important;
+  z-index: 9999 !important;
+  transform: none !important;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 120px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+#live-leaderboard .lb-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: top 0.3s ease, font-size 0.2s ease;
+}
+
+#live-leaderboard .lb-row.lb-winner {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+#live-leaderboard .lb-rank {
+  min-width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+#live-leaderboard .lb-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
 /* Custom opacity utilities */
 .bg-opacity-50 {
   background-color: rgba(0, 0, 0, 0.5);

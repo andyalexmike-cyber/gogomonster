@@ -44,6 +44,12 @@ export class UI {
 
         this.availableSpeechLines = {};
 
+        // Leaderboard
+        this.liveLeaderboard = document.getElementById("live-leaderboard");
+        this.leaderboardVisible = false;
+        this.leaderboardShowTimer = null;
+        this._cachedLbViewport = null; // Cache viewport before zoom inflation
+
         // Share Config
         this.shareUrl = window.location.href.split("?")[0];
         this.shareTitle = "Go-Go! Duck Roulette - 달려라! 오리 룰렛";
@@ -789,6 +795,121 @@ export class UI {
             this.toggleCreditsBtn.textContent = 'Show Credits ▼';
         }
     }
+    // --- Leaderboard ---
+
+    scheduleLeaderboard(delay = 3000) {
+        this.hideLeaderboard();
+        // Cache viewport size BEFORE zoom starts (zoom inflates window.innerWidth/Height on mobile)
+        this._cachedLbViewport = { width: window.innerWidth, height: window.innerHeight };
+        this.leaderboardShowTimer = setTimeout(() => {
+            this.leaderboardVisible = true;
+            this.liveLeaderboard.classList.remove("hidden");
+            this._positionLeaderboard();
+        }, delay);
+    }
+
+    _positionLeaderboard() {
+        if (!this.liveLeaderboard || !this._cachedLbViewport) return;
+        const vp = this._cachedLbViewport;
+        // Use cached viewport to compute top (= vpHeight - element height - margin)
+        // Set left and top with fixed pixel values based on real viewport
+        this.liveLeaderboard.style.left = "16px";
+        this.liveLeaderboard.style.top = "auto";
+        this.liveLeaderboard.style.bottom = "auto";
+        // Calculate from cached viewport height
+        const lbHeight = this.liveLeaderboard.offsetHeight || 200;
+        const top = vp.height - lbHeight - 16;
+        this.liveLeaderboard.style.top = `${top}px`;
+    }
+
+    _ensureLeaderboardRows(participants) {
+        if (this._lbRows && this._lbRows.size === participants.length) return;
+
+        this.liveLeaderboard.innerHTML = "";
+        this._lbRows = new Map();
+        const ROW_HEIGHT = 22;
+
+        for (const p of participants) {
+            const row = document.createElement("div");
+            row.className = "lb-row";
+            row.style.position = "absolute";
+            row.style.left = "0";
+            row.style.right = "0";
+            row.style.height = `${ROW_HEIGHT}px`;
+            row.style.transition = "top 0.3s ease";
+
+            const rankSpan = document.createElement("span");
+            rankSpan.className = "lb-rank";
+            rankSpan.style.color = p.nameColor;
+
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "lb-name";
+            nameSpan.textContent = p.name;
+            nameSpan.style.color = p.nameColor;
+
+            row.appendChild(rankSpan);
+            row.appendChild(nameSpan);
+            this.liveLeaderboard.appendChild(row);
+
+            this._lbRows.set(p.name, { row, rankSpan, nameSpan });
+        }
+
+        // Set container height
+        this.liveLeaderboard.style.position = "fixed";
+        this.liveLeaderboard.style.height = `${participants.length * ROW_HEIGHT}px`;
+    }
+
+    updateLeaderboard(participants, drawDirection, drawRank) {
+        if (!this.leaderboardVisible || !this.liveLeaderboard) return;
+
+        this._ensureLeaderboardRows(participants);
+
+        const total = participants.length;
+        const ROW_HEIGHT = 22;
+
+        for (const p of participants) {
+            const entry = this._lbRows.get(p.name);
+            if (!entry) continue;
+
+            const { row, rankSpan } = entry;
+            const rank = p.currentRank;
+
+            // Position by rank
+            row.style.top = `${(rank - 1) * ROW_HEIGHT}px`;
+
+            // Update rank text
+            rankSpan.textContent = `${rank}등`;
+
+            // Winner styling
+            const isFrontWinner = drawDirection === DRAW_DIRECTION.FRONT && rank <= drawRank;
+            const isBackWinner = drawDirection === DRAW_DIRECTION.BACK && rank >= total - drawRank + 1;
+
+            if (isFrontWinner || isBackWinner) {
+                row.classList.add("lb-winner");
+            } else {
+                row.classList.remove("lb-winner");
+            }
+        }
+
+        // Update container height and reposition
+        this.liveLeaderboard.style.height = `${total * ROW_HEIGHT}px`;
+        this._positionLeaderboard();
+    }
+
+    hideLeaderboard() {
+        if (this.leaderboardShowTimer) {
+            clearTimeout(this.leaderboardShowTimer);
+            this.leaderboardShowTimer = null;
+        }
+        this.leaderboardVisible = false;
+        this._lbRows = null;
+        this._cachedLbViewport = null;
+        if (this.liveLeaderboard) {
+            this.liveLeaderboard.classList.add("hidden");
+            this.liveLeaderboard.innerHTML = "";
+        }
+    }
+
     // --- Title Animation ---
 
     startTitleDuckAnimation() {

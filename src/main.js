@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ui.setupEventListeners({
         onStart: setupRace,
-        onRaceStart: () => game.startRaceLoop(),
+        onRaceStart: () => {
+            game.startRaceLoop();
+            ui.scheduleLeaderboard(3000);
+        },
         onReset: resetGame,
         onParticipantsChange: () => {
             saveSettingsToLocalStorage();
@@ -216,6 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof gtag === "function") gtag("event", "return_to_setup");
 
         game.stopRaceLoop();
+        ui.hideLeaderboard();
         ui.startTitleDuckAnimation();
         ui.showSetupScreen();
         ui.stopBGM();

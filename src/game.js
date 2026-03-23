@@ -108,6 +108,9 @@ export class Game {
             this.checkActiveGimmicks(p);
         }
 
+        // Update Live Leaderboard
+        this.ui.updateLeaderboard(this.participants, this.drawDirection, this.drawRank);
+
         // 70% Lock Logic
         this.checkSeventyPercentLock();
 
@@ -497,6 +500,7 @@ export class Game {
         if (shouldEnd) {
             this.stopRaceLoop();
             this.camera.reset(true);
+            this.ui.hideLeaderboard();
 
             for (const p of this.participants) {
                 if (p.state !== PARTICIPANT_STATE.FINISHED) {
