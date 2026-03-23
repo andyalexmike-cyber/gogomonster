@@ -39,6 +39,13 @@ npm run preview
 ```
 프로덕션 빌드를 로컬에서 실행하여 정상 작동하는지 확인합니다.
 
+### 테스트
+
+```bash
+node test/zoom.test.js
+```
+카메라 줌인/줌아웃 위치 계산 테스트를 실행합니다.
+
 ## 크레딧
 
 - Duck assets: [Ulti (OpenGameArt.org)](https://opengameart.org/content/character-spritesheet-duck)
