@@ -8,12 +8,16 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-module.exports = {
+module.exports = (env, argv) => {
+    const isProduction = argv.mode === 'production';
+    const publicPath = isProduction ? '/gogoduck/' : '/';
+
+    return {
     entry: './src/main.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: '/',
+        publicPath,
         clean: true,
     },
     module: {
@@ -33,6 +37,7 @@ module.exports = {
             template: './index.html',
             filename: 'index.html',
             templateParameters: {
+                basePath: publicPath,
                 lang: 'ko',
                 seo: {
                     title: '오리 경주 추첨 게임 - 달려라! 오리 레이스 뽑기 | Go-Go! Duck Roulette',
@@ -47,6 +52,7 @@ module.exports = {
             template: './index.html',
             filename: 'en/index.html',
             templateParameters: {
+                basePath: publicPath,
                 lang: 'en',
                 seo: {
                     title: 'Go-Go! Duck Roulette - Random Duck Race Lottery Game',
@@ -61,6 +67,7 @@ module.exports = {
             template: './index.html',
             filename: 'ko/index.html',
             templateParameters: {
+                basePath: publicPath,
                 lang: 'ko',
                 seo: {
                     title: '오리 경주 추첨 게임 - 달려라! 오리 레이스 뽑기 | Go-Go! Duck Roulette',
@@ -108,4 +115,5 @@ module.exports = {
         maxAssetSize: 2000000, // 2MB
         maxEntrypointSize: 2000000, // 2MB
     },
+    };
 };

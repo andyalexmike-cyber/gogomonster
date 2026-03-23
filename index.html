@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="<%= basePath %>favicon.ico">
   <title><%= seo.title %></title>
   <meta name="description" content="<%= seo.description %>" />
   <meta name="author" content="Devin Jeon" />
@@ -54,10 +54,10 @@
 
 <body class="bg-sky-50 min-h-screen flex items-center justify-center p-4">
   <!-- BGM Audio Element -->
-  <audio id="bgm-audio" src="/assets/bgm.m4a" preload="auto"></audio>
+  <audio id="bgm-audio" src="<%= basePath %>assets/bgm.m4a" preload="auto"></audio>
   <!-- Sound Effects -->
-  <audio id="win-audio" src="/assets/win.m4a" preload="auto"></audio>
-  <audio id="clap-audio" src="/assets/clap.m4a" preload="auto"></audio>
+  <audio id="win-audio" src="<%= basePath %>assets/win.m4a" preload="auto"></audio>
+  <audio id="clap-audio" src="<%= basePath %>assets/clap.m4a" preload="auto"></audio>
 
   <!-- Wrapper for main container and share buttons -->
   <div class="relative w-full max-w-3xl mt-7 md:mt-0 -translate-y-7">
@@ -156,7 +156,7 @@
         <div class="title-duck-lane relative w-full h-[70px] overflow-hidden mb-6 rounded-lg"
           style="border-bottom: 3px dashed #7dd3fc">
           <!-- sky-300 -->
-          <img id="title-duck-sprite" src="/assets/walking.gif" class="absolute bottom-1 w-[60px] h-[60px]"
+          <img id="title-duck-sprite" src="<%= basePath %>assets/walking.gif" class="absolute bottom-1 w-[60px] h-[60px]"
             style="image-rendering: pixelated; left: -60px; will-change: left" />
         </div>
 
@@ -226,10 +226,10 @@
         <div id="results-modal-overlay" class="hidden"></div>
         <div id="results-modal" class="hidden w-11/12 max-w-md bg-white rounded-2xl shadow-xl p-6 md:p-8">
           <h2 class="text-3xl font-bold text-center text-gray-800 mb-2 flex justify-center items-end -mt-4">
-            <img id="result-duck-left" src="/assets/idle.gif" class="h-16 w-16"
+            <img id="result-duck-left" src="<%= basePath %>assets/idle.gif" class="h-16 w-16"
               style="image-rendering: pixelated; transform: scaleX(-1)" />
             <span class="mx-4" data-i18n="text.results">결과</span>
-            <img id="result-duck-right" src="/assets/idle.gif" class="h-16 w-16" style="image-rendering: pixelated" />
+            <img id="result-duck-right" src="<%= basePath %>assets/idle.gif" class="h-16 w-16" style="image-rendering: pixelated" />
           </h2>
 
           <h3 id="results-title" class="text-xl font-semibold text-center text-cyan-700 mb-4"></h3>
@@ -264,7 +264,7 @@
             class="hidden mt-4 py-3 text-center text-lg text-gray-600 flex flex-col items-center justify-center"
             style="min-height: 54px">
             <span data-i18n-html="watermark">https://hyojun.me/gogoduck<br>에서 즐겨보세요!</span>
-            <img src="/qr-code.png" class="w-24 h-24 mt-2" alt="QR Code" />
+            <img src="<%= basePath %>qr-code.png" class="w-24 h-24 mt-2" alt="QR Code" />
           </div>
         </div>
       </div>

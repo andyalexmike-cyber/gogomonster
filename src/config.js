@@ -177,10 +177,10 @@ export const CONFIG = {
 
     // --- Assets ---
     ASSETS: {
-        WALKING: "/assets/walking.gif",
-        RUNNING: "/assets/running.gif",
-        IDLE: "/assets/idle.gif",
-        JUMPING: "/assets/jumping.gif",
+        WALKING: `${__webpack_public_path__}assets/walking.gif`,
+        RUNNING: `${__webpack_public_path__}assets/running.gif`,
+        IDLE: `${__webpack_public_path__}assets/idle.gif`,
+        JUMPING: `${__webpack_public_path__}assets/jumping.gif`,
     },
 
     // --- Logic Thresholds ---
