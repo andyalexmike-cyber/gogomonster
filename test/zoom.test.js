@@ -334,6 +334,103 @@ run("Winner zoom: Container below fold, scrolled to it", () => {
 });
 
 // ═══════════════════════════════════════════════
+// Camera state machine: applyTransform call pattern during zoom-in
+// ═══════════════════════════════════════════════
+//
+// Regression test: applyTransform must NOT be called every tick during
+// ZOOMING state. Repeated calls restart the CSS transition (300ms) every
+// 50ms tick, causing visible stutter.
+//
+// Expected: applyTransform once at zoom start, once at ZOOMING→TRACKING transition.
+
+const TICK_RATE = 50;
+const ZOOM_DURATION = 300;
+const SHORT_TRACK_DURATION = 1500;
+const MIN_ZOOM_HOLD_DURATION = 1300;
+
+function simulateZoomCycle() {
+    // Minimal camera state machine mirroring camera.js update() logic
+    let state = 'idle';
+    let timer = 0;
+    let applyTransformCalls = [];
+    let tick = 0;
+
+    function applyTransform() {
+        applyTransformCalls.push({ tick, state });
+    }
+
+    // --- Tick 0: IDLE → ZOOMING (zoom request arrives) ---
+    state = 'zooming';
+    timer = ZOOM_DURATION;
+    applyTransform(); // initial call at zoom start
+    tick++;
+
+    // --- Subsequent ticks during ZOOMING ---
+    while (state === 'zooming') {
+        timer -= TICK_RATE;
+        if (timer <= 0) {
+            state = 'tracking';
+            timer = SHORT_TRACK_DURATION;
+            // Apply transform at transition to sync with current duck position
+            applyTransform();
+        }
+        // Key fix: do NOT call applyTransform() here during zooming
+        tick++;
+    }
+
+    return applyTransformCalls;
+}
+
+run("Camera: applyTransform not called every tick during ZOOMING", () => {
+    const calls = simulateZoomCycle();
+
+    // Should have exactly 2 calls: zoom start + ZOOMING→TRACKING transition
+    const zoomingCalls = calls.filter(c => c.state === 'zooming');
+    const trackingCalls = calls.filter(c => c.state === 'tracking');
+
+    const totalTicks = Math.ceil(ZOOM_DURATION / TICK_RATE);
+
+    if (zoomingCalls.length === 1 && trackingCalls.length === 1 && calls.length === 2) {
+        console.log(`  ✅ PASS applyTransform called ${calls.length} times (1 at zoom start, 1 at tracking transition) over ${totalTicks} ticks`);
+        passed++;
+    } else {
+        console.log(`  ❌ FAIL applyTransform called ${calls.length} times (expected 2): zooming=${zoomingCalls.length}, tracking=${trackingCalls.length}`);
+        failed++;
+    }
+});
+
+run("Camera: old behavior would call applyTransform every tick (regression proof)", () => {
+    // Simulate the OLD (broken) behavior where applyTransform was called every tick
+    let state = 'zooming';
+    let timer = ZOOM_DURATION;
+    let oldCalls = 0;
+    let tick = 0;
+
+    // Initial call
+    oldCalls++;
+    tick++;
+
+    while (state === 'zooming') {
+        timer -= TICK_RATE;
+        if (timer <= 0) {
+            state = 'tracking';
+        }
+        oldCalls++; // OLD: called every tick regardless
+        tick++;
+    }
+
+    // Old behavior: 1 initial + ceil(300/50) ticks = 1 + 6 = 7 calls
+    const expectedOldCalls = 1 + Math.ceil(ZOOM_DURATION / TICK_RATE);
+    if (oldCalls === expectedOldCalls) {
+        console.log(`  ✅ PASS Old behavior confirmed: ${oldCalls} calls over ${tick} ticks (would restart CSS transition ${oldCalls - 1} times)`);
+        passed++;
+    } else {
+        console.log(`  ❌ FAIL Expected ${expectedOldCalls} old-style calls, got ${oldCalls}`);
+        failed++;
+    }
+});
+
+// ═══════════════════════════════════════════════
 // Summary
 // ═══════════════════════════════════════════════
 

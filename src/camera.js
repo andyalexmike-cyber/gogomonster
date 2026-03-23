@@ -153,9 +153,12 @@ export class Camera {
                     this.timer = this.targetPriority >= 110 ? CONFIG.LONG_TRACK_DURATION : CONFIG.SHORT_TRACK_DURATION;
                     this.minHoldTimer = CONFIG.MIN_ZOOM_HOLD_DURATION;
                     this.uiContainer.style.transition = "none";
+                    // Apply transform now that transition is complete, to sync with current duck position
+                    this.applyTransform();
                 }
-                // Do not allow switching while zooming
-                this.applyTransform();
+                // Do not re-apply transform during zoom-in transition — it restarts the
+                // CSS transition each tick (every 50ms), causing visible stutter.
+                // The initial applyTransform() at zoom start is sufficient.
                 return;
             }
 
