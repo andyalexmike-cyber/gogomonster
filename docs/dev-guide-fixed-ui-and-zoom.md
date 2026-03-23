@@ -140,6 +140,7 @@ _positionAnchorAtViewportCenter(anchor) {
 ## 디버깅 가이드
 
 모바일에서 고정 UI가 예상대로 동작하지 않을 때, 아래 정보를 실시간 로깅하면 문제를 빠르게 파악할 수 있습니다.
+이 항목들은 `src/debug-overlay.js`의 디버그 오버레이에 구현되어 있으며, URL에 `#debug`를 추가하면 확인할 수 있습니다.
 
 ### 필수 로깅 항목
 
@@ -210,16 +211,47 @@ while (el && el !== document.body) {
 - diff가 크면 뷰포트 팽창이 발생 중
 - 캐시가 null이면 캐싱 타이밍 문제
 
-### 디버그 오버레이 구현 팁
+### 디버그 오버레이 사용법
 
-모바일에서는 개발자 도구를 쓰기 어려우므로, 화면 오버레이 방식의 로거가 효과적입니다:
+`src/debug-overlay.js`에 구현된 실시간 디버그 오버레이를 사용하여 모바일에서도 로그를 확인할 수 있습니다.
 
-- `position: fixed; z-index: 99999`로 항상 최상위에 표시
-- URL hash(`#debug`)로 활성화하여 일반 사용자에게 노출 안 됨
-- 로그를 2000자 단위로 복사할 수 있는 버튼 제공 (디스코드/메신저 글자 제한 대응)
+#### 활성화
+
+URL에 `#debug` 해시를 추가합니다:
+```
+http://localhost:9000#debug
+```
+
+일반 사용자에게는 노출되지 않으며, `#debug`가 없으면 UI 생성/rAF 루프/로그 수집이 모두 비활성화되어 성능 영향이 없습니다.
+
+#### 로그 태그
+
+| 태그 | 내용 | 조건 |
+|------|------|------|
+| `SCROLL` | 스크롤 위치, 뷰포트 크기 | 카메라 활성 상태(zooming/tracking/panning)에서만 기록 |
+| `ZOOM` | `#main-ui-container`의 transform, transition 값 | 변경 시 |
+| `CAM` | 카메라 상태머신 (state, target, priority, timer, cooldown, 70%락, 현재 요청) | 변경 시 |
+| `VP` | 캐시된 뷰포트 vs 현재 뷰포트 차이 | 변경 시 |
+| `UI` | 리더보드 computed style (position, display, z-index, top, left) | 변경 시 |
+| `UI-RECT` | 리더보드 getBoundingClientRect | 변경 시 (visible일 때만) |
+| `ANCESTOR-TF` | 리더보드 조상 중 transform이 있는 요소 감지 | 감지 시 |
+| `TICK` | 게임루프 틱 간격 통계 (avg/min/max/jitter) | jitter > 30ms일 때 |
+| `FRAME-DROP` | rAF 간격 40ms 초과 | 발생 시 |
+
+#### UI 기능
+
+- **접기/펼치기 (▼/▲)** — 로그 영역을 접어 화면 가림 최소화
+- **Copy All** — 전체 로그 클립보드 복사
+- **Copy 1/N, 2/N, ...** — 2000자 단위 분할 복사 (디스코드 글자 제한 대응)
+- **Clear** — 로그 초기화
+- **스크롤** — 위로 스크롤하면 자동 스크롤 멈춤, 맨 아래로 돌아오면 재개
+
+#### 설계 원칙
+
+- `position: fixed; z-index: 99999`로 줌 transform 영향 밖에서 최상위 표시
 - `requestAnimationFrame`으로 매 프레임 상태 모니터링
 - 변경 시에만 로그 기록 (이전 값과 비교)하여 노이즈 감소
-- 최근 N줄만 화면에 표시하고, 전체 로그는 배열에 보관하여 복사 시 사용
+- 전체 로그를 배열에 보관하여 스크롤로 이전 로그 확인 가능
 
 ### 체크리스트
 

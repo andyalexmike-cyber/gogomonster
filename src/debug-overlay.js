@@ -18,6 +18,7 @@ export class DebugOverlay {
     constructor(camera, mainUiContainer) {
         this._camera = camera;
         this._container = mainUiContainer;
+        this._leaderboard = document.getElementById('live-leaderboard');
         this._logs = [];
         this._prev = {};
         this._rafId = null;
@@ -250,6 +251,8 @@ export class DebugOverlay {
             this._checkTransform();
             this._checkCameraState();
             this._checkViewportDiff();
+            this._checkFixedUI();
+            this._checkAncestorTransform();
             this._checkTickJitter();
 
             this._renderLog();
@@ -311,6 +314,43 @@ export class DebugOverlay {
         const val = `cached:(${cached.width}x${cached.height}) current:(${window.innerWidth}x${window.innerHeight}) diff:(${dw},${dh})`;
         if (this._changed('vpdiff', val)) {
             this._log(`VP ${val}`);
+        }
+    }
+
+    _checkFixedUI() {
+        if (!this._leaderboard) return;
+        const cs = window.getComputedStyle(this._leaderboard);
+        // Computed style check
+        const styleVal = `pos:${cs.position} d:${cs.display} z:${cs.zIndex} top:${cs.top} left:${cs.left}`;
+        if (this._changed('fixedUI', styleVal)) {
+            this._log(`UI ${styleVal}`);
+        }
+        // Bounding rect check (only when visible)
+        if (cs.display !== 'none') {
+            const rect = this._leaderboard.getBoundingClientRect();
+            const rectVal = `(${Math.round(rect.left)},${Math.round(rect.top)},${Math.round(rect.width)}x${Math.round(rect.height)})`;
+            if (this._changed('fixedUIRect', rectVal)) {
+                this._log(`UI-RECT ${rectVal}`);
+            }
+        }
+    }
+
+    _checkAncestorTransform() {
+        if (!this._leaderboard) return;
+        const transforms = [];
+        let el = this._leaderboard.parentElement;
+        while (el && el !== document.body) {
+            const elTf = window.getComputedStyle(el).transform;
+            if (elTf && elTf !== 'none') {
+                transforms.push(`${el.id || el.tagName}:${elTf}`);
+            }
+            el = el.parentElement;
+        }
+        const val = transforms.length > 0 ? transforms.join(' ') : 'none';
+        if (this._changed('ancestorTf', val)) {
+            if (transforms.length > 0) {
+                this._log(`ANCESTOR-TF ${val}`);
+            }
         }
     }
 
