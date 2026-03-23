@@ -19,6 +19,7 @@ export class Camera {
         this.isSeventyPercentLockActive = false;
         this.minHoldTimer = 0;
         this.lastFrameRequest = { target: null, priority: 0, reason: "" }; // Track previous frame's winner
+        this._cachedViewport = null; // Cached viewport size (mobile browsers change innerWidth/Height during CSS transforms)
 
     }
 
@@ -53,6 +54,7 @@ export class Camera {
             this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_OUT_DURATION / 1000}s ease-in-out`;
         }
         this.uiContainer.style.transform = "translate(0px, 0px) scale(1)";
+        this._cachedViewport = null;
         this._hideSpotlight();
     }
 
@@ -88,6 +90,8 @@ export class Camera {
             this.targetPriority = this.currentRequest.priority;
             this.state = CAMERA_STATE.ZOOMING;
             this.timer = CONFIG.ZOOM_DURATION;
+            // Cache viewport size before zoom (mobile browsers change innerWidth/Height during CSS transforms)
+            this._cachedViewport = { width: window.innerWidth, height: window.innerHeight };
             this.uiContainer.style.transition = `transform ${CONFIG.ZOOM_DURATION / 1000}s ease-in-out`;
             this.applyTransform();
             this._showSpotlight();
@@ -287,9 +291,13 @@ export class Camera {
         // Container's untransformed page position
         const containerPos = this._getPagePosition(this.uiContainer);
 
+        // Use cached viewport size (mobile browsers inflate innerWidth/Height during CSS transforms)
+        const vpWidth = this._cachedViewport ? this._cachedViewport.width : window.innerWidth;
+        const vpHeight = this._cachedViewport ? this._cachedViewport.height : window.innerHeight;
+
         // Viewport center in container's untransformed coordinate system
-        const vpCenterInContainerX = window.scrollX + window.innerWidth / 2 - containerPos.x;
-        const vpCenterInContainerY = window.scrollY + window.innerHeight / 2 - containerPos.y;
+        const vpCenterInContainerX = window.scrollX + vpWidth / 2 - containerPos.x;
+        const vpCenterInContainerY = window.scrollY + vpHeight / 2 - containerPos.y;
 
         // Correct translation: accounts for both scale and scroll position
         // Visual position of point P = origin + scale*(P - origin) + translate
@@ -307,22 +315,22 @@ export class Camera {
 
         const scale = CONFIG.HIGHLIGHT_ZOOM_SCALE;
 
-        // Use offset properties for untransformed positions
-        const duckPos = this._getPositionInContainer(participant.element);
-        const duckCenterX = duckPos.x + participant.element.offsetWidth / 2;
-        const duckCenterY = duckPos.y + participant.element.offsetHeight / 2;
+        // Use getBoundingClientRect for accurate visual positions (safe here since
+        // this is a one-shot calculation, not a continuous loop — no feedback risk)
+        const duckRect = participant.element.getBoundingClientRect();
+        const containerRect = this.uiContainer.getBoundingClientRect();
 
-        // Container's untransformed page position
-        const containerPos = this._getPagePosition(this.uiContainer);
+        // Duck center relative to container
+        const relX = (duckRect.left + duckRect.width / 2) - containerRect.left;
+        const relY = (duckRect.top + duckRect.height / 2) - containerRect.top;
 
-        // Viewport center in container's untransformed coordinate system
-        const vpCenterInContainerX = window.scrollX + window.innerWidth / 2 - containerPos.x;
-        const vpCenterInContainerY = window.scrollY + window.innerHeight / 2 - containerPos.y;
-
-        const t1x = -duckCenterX;
-        const t1y = -duckCenterY;
-        const t2x = vpCenterInContainerX;
-        const t2y = vpCenterInContainerY;
+        // With transformOrigin "0 0" and transform: translate(t2) scale(s) translate(t1)
+        // Duck at (relX, relY) maps to: containerPos + t2 + s*(rel + t1)
+        // Set t1 = -rel so duck maps to containerPos + t2, then t2 = vpCenter - containerPos
+        const t1x = -relX;
+        const t1y = -relY;
+        const t2x = window.innerWidth / 2 - containerRect.left;
+        const t2y = window.innerHeight / 2 - containerRect.top;
 
         this.uiContainer.style.transform = `translate(${t2x}px, ${t2y}px) scale(${scale}) translate(${t1x}px, ${t1y}px)`;
     }
