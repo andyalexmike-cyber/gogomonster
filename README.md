@@ -53,7 +53,6 @@ node test/zoom.test.js
 - Win sound: [Listener (OpenGameArt.org)](https://opengameart.org/content/win-sound-effect)
 - Clap sound: [qubodup (OpenGameArt.org)](https://opengameart.org/content/well-done)
 - Gowun Dodum (고운돋움체) 폰트: [yangheeryu](https://github.com/yangheeryu/Gowun-Dodum)
-- [참고] 90% 이상의 코드는 Gemini 3.0 Pro 및 Gemini 2.5 Pro로 작성되었습니다.
 
 ## 라이선스
 

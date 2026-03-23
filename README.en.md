@@ -46,7 +46,6 @@ Run the production build locally to verify it works as expected.
 - Win sound: [Listener (OpenGameArt.org)](https://opengameart.org/content/win-sound-effect)
 - Clap sound: [qubodup (OpenGameArt.org)](https://opengameart.org/content/well-done)
 - Gowun Dodum (고운돋움체) font: [yangheeryu](https://github.com/yangheeryu/Gowun-Dodum)
-- [Note] More than 90% of the code was written by Gemini 3.0 Pro and Gemini 2.5 Pro.
 
 ## License
 
