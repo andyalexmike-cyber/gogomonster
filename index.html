@@ -385,7 +385,12 @@
             <div class="sidebar-content">
                 <div class="section">
                     <div class="section-title">참여자 명단</div>
-                    <textarea class="participants-input" id="participants" placeholder="이름을 입력하세요 (줄바꿈 또는 쉼표)\n예: 철수, 영희*3, 민수">영수, 영호, 영식, 영철, 광수, 상철</textarea>
+                    <textarea class="participants-input" id="participants" placeholder="이름을 입력하세요 (줄바꿈으로 구분)\n예:\n철수\n영희*3\n민수">영수
+영호
+영식
+영철
+광수
+상철</textarea>
                 </div>
 
                 <div class="section">
@@ -611,10 +616,13 @@
                 this.minimapRect = { x: 0, y: 0, w: 0, h: 40 };
                 this.lastResultText = ""; // 마지막 결과 저장용
 
-                this.emojis = [
-                    '😀','😃','😄','😁','😆','😅','😂','🤣','😉','😊','😇','😍','🤩','😘','😗','😚','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔',
-                    '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐻‍❄️','🐨','🐯','🦁','🐮','🐷','🐵','🐔','🐧','🐦','🐤','🐣','🦉','🐺'
-                ];
+                this.monsterImages = [];
+                this.monsterCount = 8;
+                for (let i = 1; i <= this.monsterCount; i++) {
+                    const img = new Image();
+                    img.src = 'images/monster' + i + '.png';
+                    this.monsterImages.push(img);
+                }
                 this.colors = ['#ff007f', '#00f2ff', '#bc13fe', '#ffdd00', '#39ff14', '#ff4d00'];
 
                 // Background elements
@@ -622,12 +630,7 @@
                 this.buildings = [];
                 this.gridOffset = 0;
                 this.initBackground();
-                this.items = [
-                    { id: 'nitro', icon: '🚀', chance: 0.4 },
-                    { id: 'shield', icon: '🛡️', chance: 0.3 },
-                    { id: 'ghost', icon: '👻', chance: 0.2 },
-                    { id: 'lightning', icon: '🌩️', chance: 0.1 }
-                ];
+                this.items = [];
                 
                 this.setupCanvas();
                 this.bindEvents();
@@ -745,7 +748,7 @@
 
                 this.players = displayNames.map((name, i) => ({
                     name,
-                    emoji: this.emojis[Math.floor(Math.random() * this.emojis.length)],
+                    monsterImg: this.monsterImages[i % this.monsterCount],
                     color: this.colors[i % this.colors.length],
                     x: 100, y: trackTop + laneHeight * (i + 0.5),
                     baseY: trackTop + laneHeight * (i + 0.5),
@@ -754,7 +757,7 @@
                     accel: 0.15 + Math.random() * 0.15,
                     trail: [], finished: false, finishTime: 0, rank: 0,
                     collisionTimer: 0, item: null, itemTimer: 0,
-                    isGhost: false, hasShield: false,
+                    isGhost: false,
                     trackTop: trackTop,
                     trackBottom: trackBottom
                 }));
@@ -763,25 +766,71 @@
                 const obstacleCount = Math.floor(density * (raceLength / 6000) * 0.8);
                 const yBucketSize = trackHeight / obstacleCount;
                 for (let i = 0; i < obstacleCount; i++) {
+                    const roll = Math.random();
+                    let obsType;
+                    if (roll < 0.35) obsType = 'slow';
+                    else if (roll < 0.6) obsType = 'sawblade';
+                    else if (roll < 0.8) obsType = 'laser';
+                    else obsType = 'blackhole';
+
+                    const baseX = 800 + Math.random() * (this.raceLength - 1500);
+                    const baseY = trackTop + (i * yBucketSize) + Math.random() * yBucketSize;
+
+                    if (obsType === 'sawblade') {
+                        this.obstacles.push({
+                            x: baseX, y: baseY, type: 'sawblade',
+                            size: 35 + Math.random() * 20,
+                            angle: Math.random() * Math.PI * 2,
+                            rotSpeed: (0.08 + Math.random() * 0.1) * (Math.random() > 0.5 ? 1 : -1),
+                            orbitRadius: 60 + Math.random() * 80,
+                            orbitAngle: Math.random() * Math.PI * 2,
+                            orbitSpeed: (0.015 + Math.random() * 0.02) * (Math.random() > 0.5 ? 1 : -1),
+                            centerX: baseX, centerY: baseY
+                        });
+                    } else if (obsType === 'laser') {
+                        this.obstacles.push({
+                            x: baseX, y: trackTop, type: 'laser',
+                            size: 0, angle: 0, rotSpeed: 0,
+                            laserHeight: trackHeight,
+                            laserTimer: Math.random() * Math.PI * 2,
+                            laserSpeed: 0.03 + Math.random() * 0.02,
+                            laserOn: false
+                        });
+                    } else if (obsType === 'blackhole') {
+                        this.obstacles.push({
+                            x: baseX, y: baseY, type: 'blackhole',
+                            size: 40 + Math.random() * 20,
+                            angle: Math.random() * Math.PI * 2,
+                            rotSpeed: 0.05 + Math.random() * 0.05,
+                            pullRadius: 150 + Math.random() * 100,
+                            pullStrength: 0.3 + Math.random() * 0.3
+                        });
+                    } else {
+                        this.obstacles.push({
+                            x: baseX, y: baseY, type: 'slow',
+                            size: 50 + Math.random() * 30,
+                            angle: Math.random() * Math.PI * 2,
+                            rotSpeed: (0.02 + Math.random() * 0.05) * (Math.random() > 0.5 ? 1 : -1)
+                        });
+                    }
+                }
+
+                // 슬로우 지대 — 결승점 부근 마지막 20% 구간에 대량 배치
+                const slowZoneStart = this.raceLength * 0.75;
+                const slowZoneEnd = this.raceLength - 200;
+                const slowZoneCount = Math.floor(density * 0.8);
+                for (let i = 0; i < slowZoneCount; i++) {
                     this.obstacles.push({
-                        x: 800 + Math.random() * (this.raceLength - 1500),
-                        y: trackTop + (i * yBucketSize) + Math.random() * yBucketSize,
-                        type: Math.random() > 0.6 ? 'boost' : 'slow',
-                        size: 50 + Math.random() * 30,
-                        angle: Math.random() * Math.PI * 2,
-                        rotSpeed: (0.02 + Math.random() * 0.05) * (Math.random() > 0.5 ? 1 : -1)
+                        x: slowZoneStart + Math.random() * (slowZoneEnd - slowZoneStart),
+                        y: trackTop + Math.random() * trackHeight,
+                        type: 'slowzone',
+                        size: 60 + Math.random() * 40,
+                        angle: 0, rotSpeed: 0,
+                        pulseTimer: Math.random() * Math.PI * 2
                     });
                 }
 
                 this.itemBoxes = [];
-                const boxCount = Math.floor(raceLength / 1200);
-                for (let i = 0; i < boxCount; i++) {
-                    this.itemBoxes.push({
-                        x: 1500 + (i * 1200) + (Math.random() * 400),
-                        y: trackTop + Math.random() * trackHeight,
-                        size: 40, angle: 0, active: true
-                    });
-                }
 
                 // 트랙 영역 저장
                 this.trackTop = trackTop;
@@ -826,12 +875,10 @@
                 p.item = null;
                 this.sound.playItemUse(item.id);
                 if (item.id === 'nitro') { p.vx += 30; this.addParticles(p.x, p.y, p.color, 20); }
-                else if (item.id === 'shield') { p.hasShield = true; p.itemTimer = 180; }
-                else if (item.id === 'ghost') { p.isGhost = true; p.itemTimer = 120; p.vx += 15; }
                 else if (item.id === 'lightning') {
                     this.shake = 15;
                     this.players.forEach(other => {
-                        if (other !== p && !other.hasShield) { other.vx -= 15; this.addParticles(other.x, other.y, '#ffd700', 10); }
+                        if (other !== p) { other.vx -= 15; this.addParticles(other.x, other.y, '#ffd700', 10); }
                     });
                 }
                 this.updateRankingUI();
@@ -872,8 +919,21 @@
                 const ms = Math.floor((elapsed % 1) * 100).toString().padStart(2, '0');
                 document.getElementById('gameTimer').textContent = `${m}:${s}.${ms}`;
 
-                this.obstacles.forEach(obs => { obs.angle += obs.rotSpeed * dtScale; });
-                this.itemBoxes.forEach(box => { box.angle += 0.05 * dtScale; });
+                this.obstacles.forEach(obs => {
+                    obs.angle += obs.rotSpeed * dtScale;
+                    if (obs.type === 'sawblade') {
+                        obs.orbitAngle += obs.orbitSpeed * dtScale;
+                        obs.x = obs.centerX + Math.cos(obs.orbitAngle) * obs.orbitRadius;
+                        obs.y = obs.centerY + Math.sin(obs.orbitAngle) * obs.orbitRadius;
+                    }
+                    if (obs.type === 'laser') {
+                        obs.laserTimer += obs.laserSpeed * dtScale;
+                        obs.laserOn = Math.sin(obs.laserTimer) > 0.2;
+                    }
+                    if (obs.type === 'slowzone') {
+                        obs.pulseTimer += 0.03 * dtScale;
+                    }
+                });
 
                 this.players.forEach(p => {
                     if (p.finished) {
@@ -885,8 +945,7 @@
                         return;
                     }
 
-                    if (p.itemTimer > 0) { p.itemTimer -= dtScale; if (p.itemTimer <= 0) { p.isGhost = false; p.hasShield = false; } }
-                    if (p.item && Math.random() < 0.01) this.useItem(p);
+                    if (p.itemTimer > 0) { p.itemTimer -= dtScale; if (p.itemTimer <= 0) { p.isGhost = false; } }
 
                     // --- 역전 드라마를 위한 동적 물리 로직 ---
                     // 현재 순위 계산 (물리용)
@@ -935,49 +994,66 @@
                         if (p.trail.length > 25) p.trail.shift();
                     }
 
-                    this.itemBoxes.forEach(box => {
-                        if (box.active && Math.abs(p.x - box.x) < 40 && Math.abs(p.y - box.y) < 40) {
-                            box.active = false;
-                            this.sound.playCollect();
-                            if (!p.item) {
-                                // 순위에 따른 차등 아이템 획득 로직
-                                const sortedForItems = [...this.players].sort((a, b) => b.x - a.x);
-                                const rank = sortedForItems.indexOf(p) + 1;
-                                const total = this.players.length;
-                                
-                                let itemPool = [];
-                                if (rank === 1) {
-                                    // 1등: 주로 쉴드, 가끔 부스트
-                                    itemPool = ['shield', 'shield', 'shield', 'nitro'];
-                                } else if (rank <= total / 2) {
-                                    // 중위권: 골고루
-                                    itemPool = ['nitro', 'nitro', 'shield', 'ghost', 'lightning'];
-                                } else {
-                                    // 하위권: 강력한 역전 아이템 (니트로, 번개)
-                                    itemPool = ['nitro', 'nitro', 'nitro', 'lightning', 'lightning', 'ghost'];
-                                }
-                                
-                                const selectedId = itemPool[Math.floor(Math.random() * itemPool.length)];
-                                p.item = this.items.find(it => it.id === selectedId);
-                                this.updateRankingUI();
-                            }
-                        }
-                    });
-
                     this.obstacles.forEach(obs => {
+                        if (obs.type === 'slowzone') {
+                            const dx = p.x - obs.x; const dy = p.y - obs.y;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < obs.size / 2) {
+                                p.vx *= 0.96;
+                                p.speed *= 0.998;
+                                if (Math.random() < 0.05) this.addParticles(p.x, p.y, '#00ffcc', 3);
+                            }
+                            return;
+                        }
+                        if (obs.type === 'laser') {
+                            if (obs.laserOn && Math.abs(p.x - obs.x) < 12 && p.y >= obs.y && p.y <= obs.y + obs.laserHeight && p.collisionTimer <= 0) {
+                                p.vx *= 0.5;
+                                p.vy += (Math.random() - 0.5) * 45;
+                                this.addParticles(p.x, p.y, '#ff00ff', 12);
+                                this.sound.playHit();
+                                p.collisionTimer = 6;
+                            }
+                            return;
+                        }
+                        if (obs.type === 'blackhole') {
+                            const dx = obs.x - p.x; const dy = obs.y - p.y;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < obs.pullRadius && dist > 5) {
+                                const pull = obs.pullStrength * (1 - dist / obs.pullRadius) * dtScale * 1.5;
+                                // x축 흡인은 현재 전진 속도의 30%까지만 허용 (갇힘 방지)
+                                const maxPullX = (p.speed + p.vx) * 0.3;
+                                const pullX = Math.min(Math.abs((dx / dist) * pull), maxPullX) * Math.sign(dx);
+                                p.vx += pullX;
+                                p.vy += (dy / dist) * pull * 3;
+                            }
+                            if (dist < obs.size / 2 && p.collisionTimer <= 0) {
+                                p.vx *= 0.6;
+                                p.vy = (Math.random() - 0.5) * 60;
+                                // 중심 충돌 시 뒤가 아닌 옆으로 튕겨내기
+                                p.x = obs.x + (dx / dist) * obs.size;
+                                this.addParticles(p.x, p.y, '#a855f7', 15);
+                                this.sound.playHit();
+                                p.collisionTimer = 7;
+                            }
+                            return;
+                        }
                         const dx = p.x - obs.x; const dy = p.y - obs.y; const dist = Math.sqrt(dx*dx + dy*dy);
-                        if (dist < obs.size / 2 && p.collisionTimer <= 0 && !p.isGhost) {
+                        if (dist < obs.size / 2 && p.collisionTimer <= 0) {
                             const nx = dx / dist; const ny = dy / dist; const tx = -ny; const ty = nx;
                             const surfaceSpeed = (obs.size / 2) * obs.rotSpeed * 15;
-                            if (obs.type === 'boost') { p.vx += nx * 15 + tx * surfaceSpeed; p.vy += ny * 15 + ty * surfaceSpeed; this.addParticles(p.x, p.y, '#00f2ff', 8); this.sound.playBoost(); }
-                            else if (!p.hasShield) {
-                                p.vx = nx * 5 + tx * surfaceSpeed * 0.5;
+                            if (obs.type === 'sawblade') {
+                                p.vx *= 0.5;
                                 const vDir = Math.abs(ny) < 0.1 ? (Math.random() > 0.5 ? 1 : -1) : Math.sign(ny);
-                                p.vy = vDir * Math.max(Math.abs(ny * 25), 18) + ty * surfaceSpeed;
-                                this.addParticles(p.x, p.y, '#ff4444', 5);
-                                this.sound.playHit();
+                                p.vy = vDir * Math.max(Math.abs(ny * 40), 35) + ty * surfaceSpeed * 2;
+                                this.addParticles(p.x, p.y, '#ff8c00', 12);
+                            } else {
+                                p.vx *= 0.7;
+                                const vDir = Math.abs(ny) < 0.1 ? (Math.random() > 0.5 ? 1 : -1) : Math.sign(ny);
+                                p.vy = vDir * Math.max(Math.abs(ny * 35), 28) + ty * surfaceSpeed * 1.5;
+                                this.addParticles(p.x, p.y, '#ff4444', 8);
                             }
-                            p.collisionTimer = 15;
+                            this.sound.playHit();
+                            p.collisionTimer = obs.type === 'sawblade' ? 6 : 5;
                         }
                     });
 
@@ -1074,7 +1150,7 @@
                     html += `
                         <div class="ranking-item" style="border-left: 3px solid ${p.color}">
                             <span class="ranking-rank">${rank}</span>
-                            <span class="ranking-name">${p.emoji} ${p.name} ${p.item ? `<span class="ranking-item-icon">${p.item.icon}</span>` : ''}</span>
+                            <span class="ranking-name"><img src="${p.monsterImg.src}" style="width:20px;height:20px;vertical-align:middle;margin-right:4px;">${p.name}</span>
                             <span class="ranking-time">${getMedal(rank)}${time.toFixed(2)}s</span>
                         </div>
                     `;
@@ -1092,7 +1168,7 @@
                         html += `
                             <div class="ranking-item" style="border-left: 3px solid ${p.color}; opacity: 0.85;">
                                 <span class="ranking-rank">${rank}</span>
-                                <span class="ranking-name">${p.emoji} ${p.name} ${p.item ? `<span class="ranking-item-icon">${p.item.icon}</span>` : ''}</span>
+                                <span class="ranking-name"><img src="${p.monsterImg.src}" style="width:20px;height:20px;vertical-align:middle;margin-right:4px;">${p.name}</span>
                                 <span class="ranking-time">${progress}%</span>
                             </div>
                         `;
@@ -1133,7 +1209,7 @@
                 });
                 
                 const winner = sorted[0];
-                document.getElementById('winnerName').textContent = `${winner.emoji} ${winner.name}`;
+                document.getElementById('winnerName').innerHTML = `<img src="${winner.monsterImg.src}" style="width:36px;height:36px;vertical-align:middle;margin-right:8px;">${winner.name}`;
                 
                 // 최종 순위 리스트 생성
                 const finalRankingList = document.getElementById('finalRankingList');
@@ -1144,7 +1220,7 @@
                     return `
                         <div class="final-ranking-item rank-${rank}" style="animation-delay: ${i * 0.1}s">
                             <span class="final-position">${rank}</span>
-                            <span class="final-name">${p.emoji} ${p.name}</span>
+                            <span class="final-name"><img src="${p.monsterImg.src}" style="width:24px;height:24px;vertical-align:middle;margin-right:6px;">${p.name}</span>
                             <span class="final-time">${timeText}</span>
                         </div>
                     `;
@@ -1347,27 +1423,83 @@
                     ctx.beginPath(); ctx.moveTo(i, trackTop); ctx.lineTo(i, trackBottom); ctx.stroke();
                 }
                 this.obstacles.forEach(obs => {
-                    const isBoost = obs.type === 'boost';
-                    ctx.save(); ctx.translate(obs.x, obs.y); ctx.rotate(obs.angle);
-                    ctx.shadowBlur = 20; ctx.shadowColor = isBoost ? '#00f2ff' : '#ff0055';
-                    ctx.fillStyle = isBoost ? 'rgba(0, 242, 255, 0.2)' : 'rgba(255, 0, 85, 0.2)';
-                    ctx.strokeStyle = isBoost ? '#00f2ff' : '#ff0055'; ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    for(let i=0; i<6; i++) {
-                        const ang = (i/6) * Math.PI * 2;
-                        const px = Math.cos(ang) * (obs.size/2); const py = Math.sin(ang) * (obs.size/2);
-                        if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                    ctx.save();
+                    if (obs.type === 'slowzone') {
+                        ctx.translate(obs.x, obs.y);
+                        const pulse = 0.6 + Math.sin(obs.pulseTimer) * 0.4;
+                        const r = obs.size / 2;
+                        ctx.shadowBlur = 15; ctx.shadowColor = '#00ffcc';
+                        const grd = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+                        grd.addColorStop(0, `rgba(0, 255, 204, ${0.2 * pulse})`);
+                        grd.addColorStop(0.7, `rgba(0, 255, 204, ${0.08 * pulse})`);
+                        grd.addColorStop(1, 'rgba(0, 255, 204, 0)');
+                        ctx.fillStyle = grd;
+                        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+                        ctx.strokeStyle = `rgba(0, 255, 204, ${0.4 * pulse})`; ctx.lineWidth = 1.5;
+                        ctx.setLineDash([4, 6]);
+                        ctx.beginPath(); ctx.arc(0, 0, r * 0.7, 0, Math.PI * 2); ctx.stroke();
+                        ctx.setLineDash([]);
+                        ctx.font = '14px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        ctx.globalAlpha = 0.7; ctx.fillText('🕸️', 0, 0);
+                        ctx.restore(); return;
                     }
-                    ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
-                });
-                this.itemBoxes.forEach(box => {
-                    if (!box.active) return;
-                    ctx.save(); ctx.translate(box.x, box.y); ctx.rotate(box.angle);
-                    ctx.shadowBlur = 15; ctx.shadowColor = '#fff';
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 2; ctx.strokeRect(-box.size/2, -box.size/2, box.size, box.size);
-                    ctx.font = '24px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    ctx.fillText('🎁', 0, 0); ctx.restore();
+                    if (obs.type === 'laser') {
+                        const alpha = obs.laserOn ? 0.8 : 0.15;
+                        const color = obs.laserOn ? '#ff00ff' : '#660066';
+                        ctx.strokeStyle = color; ctx.lineWidth = obs.laserOn ? 6 : 2;
+                        ctx.shadowBlur = obs.laserOn ? 25 : 5; ctx.shadowColor = '#ff00ff';
+                        ctx.globalAlpha = alpha;
+                        ctx.beginPath(); ctx.moveTo(obs.x, obs.y); ctx.lineTo(obs.x, obs.y + obs.laserHeight); ctx.stroke();
+                        if (obs.laserOn) {
+                            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.globalAlpha = 0.5;
+                            ctx.beginPath(); ctx.moveTo(obs.x, obs.y); ctx.lineTo(obs.x, obs.y + obs.laserHeight); ctx.stroke();
+                        }
+                        ctx.font = '16px serif'; ctx.textAlign = 'center'; ctx.globalAlpha = 1;
+                        ctx.fillText('⚡', obs.x, obs.y - 5);
+                    } else if (obs.type === 'blackhole') {
+                        ctx.translate(obs.x, obs.y); ctx.rotate(obs.angle);
+                        ctx.shadowBlur = 30; ctx.shadowColor = '#a855f7';
+                        const grd = ctx.createRadialGradient(0, 0, 0, 0, 0, obs.pullRadius);
+                        grd.addColorStop(0, 'rgba(168, 85, 247, 0.15)');
+                        grd.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        ctx.fillStyle = grd;
+                        ctx.beginPath(); ctx.arc(0, 0, obs.pullRadius, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = 'rgba(20, 0, 40, 0.9)';
+                        ctx.beginPath(); ctx.arc(0, 0, obs.size / 2, 0, Math.PI * 2); ctx.fill();
+                        ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2;
+                        for (let i = 0; i < 3; i++) {
+                            const a = (i / 3) * Math.PI * 2 + obs.angle * 3;
+                            ctx.beginPath(); ctx.arc(0, 0, obs.size / 2 + 8 + i * 10, a, a + 1.2); ctx.stroke();
+                        }
+                    } else if (obs.type === 'sawblade') {
+                        ctx.translate(obs.x, obs.y); ctx.rotate(obs.angle);
+                        ctx.shadowBlur = 15; ctx.shadowColor = '#ff8c00';
+                        ctx.fillStyle = 'rgba(255, 140, 0, 0.3)';
+                        ctx.strokeStyle = '#ff8c00'; ctx.lineWidth = 2;
+                        const r = obs.size / 2; const teeth = 8;
+                        ctx.beginPath();
+                        for (let i = 0; i < teeth * 2; i++) {
+                            const ang = (i / (teeth * 2)) * Math.PI * 2;
+                            const rad = i % 2 === 0 ? r : r * 0.6;
+                            const px = Math.cos(ang) * rad; const py = Math.sin(ang) * rad;
+                            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath(); ctx.fill(); ctx.stroke();
+                        ctx.fillStyle = '#ff8c00'; ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+                    } else {
+                        ctx.translate(obs.x, obs.y); ctx.rotate(obs.angle);
+                        ctx.shadowBlur = 20; ctx.shadowColor = '#ff0055';
+                        ctx.fillStyle = 'rgba(255, 0, 85, 0.2)';
+                        ctx.strokeStyle = '#ff0055'; ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        for(let i=0; i<6; i++) {
+                            const ang = (i/6) * Math.PI * 2;
+                            const px = Math.cos(ang) * (obs.size/2); const py = Math.sin(ang) * (obs.size/2);
+                            if(i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath(); ctx.fill(); ctx.stroke();
+                    }
+                    ctx.restore();
                 });
                 const finishX = this.raceLength;
                 const grad = ctx.createLinearGradient(finishX - 50, 0, finishX + 50, 0);
@@ -1381,10 +1513,11 @@
                         ctx.stroke(); ctx.restore();
                     }
                     ctx.save(); ctx.translate(p.x, p.y);
-                    if (p.isGhost) ctx.globalAlpha = 0.4;
-                    if (p.hasShield) { ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 30, 0, Math.PI*2); ctx.stroke(); }
-                    ctx.font = '36px serif'; ctx.textAlign = 'center'; ctx.shadowBlur = 10; ctx.shadowColor = '#fff';
-                    ctx.fillText(p.emoji, 0, 12); ctx.restore();
+                    ctx.shadowBlur = 10; ctx.shadowColor = '#fff';
+                    if (p.monsterImg && p.monsterImg.complete) {
+                        ctx.drawImage(p.monsterImg, -24, -24, 48, 48);
+                    }
+                    ctx.restore();
                     ctx.font = 'bold 13px "Noto Sans KR"'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
                     ctx.strokeText(p.name, p.x, p.y - 30); ctx.fillText(p.name, p.x, p.y - 30);
                 });
@@ -1465,10 +1598,10 @@
                     const rank = i + 1;
                     if (p.finished && this.gameStartTime > 0) {
                         const time = (p.finishTime - this.gameStartTime) / 1000;
-                        text += `${rank}등: ${p.emoji} ${p.name} (${getMedal(rank)}${time.toFixed(2)}s)\n`;
+                        text += `${rank}등: ${p.name} (${getMedal(rank)}${time.toFixed(2)}s)\n`;
                     } else {
                         const progress = Math.floor((p.x / this.raceLength) * 100);
-                        text += `${rank}등: ${p.emoji} ${p.name} (${progress}% 진행 중)\n`;
+                        text += `${rank}등: ${p.name} (${progress}% 진행 중)\n`;
                     }
                 });
                 return text;
@@ -1485,7 +1618,7 @@
             const densityValue = document.getElementById('densityValue');
 
             function parseParticipants(input) {
-                const names = input.split(/[,\n]/).map(n => n.trim()).filter(n => n);
+                const names = input.split(/\n/).map(n => n.trim()).filter(n => n);
                 const result = [];
                 for (const name of names) {
                     const match = name.match(/^(.+)\*(\d+)$/);
