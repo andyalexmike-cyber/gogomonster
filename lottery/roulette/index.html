@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<!--
+@game-meta
+{
+  "id": "roulette",
+  "title": "룰렛 추첨",
+  "emoji": "🎡",
+  "category": "추첨",
+  "description": "화려한 룰렛 휠을 돌려 행운의 당첨자를 선정하세요!",
+  "features": ["🎨 화려한 색상", "⚡ 스핀 애니메이션"],
+  "color": "purple",
+  "badge": "NEW",
+  "version": "1.0.0",
+  "updated": "2025-12-23",
+  "author": {
+    "name": "Euiyun Edwin Kim",
+    "email": "geniuskey@gmail.com",
+    "github": "geniuskey"
+  },
+  "urls": {
+    "service": "https://geniuskey.github.io/lottery/roulette/",
+    "repository": "https://github.com/geniuskey/lottery"
+  },
+  "license": "MIT",
+  "copyright": "© 2025 Euiyun Edwin Kim. Licensed under the MIT License."
+}
+@end-game-meta
+-->
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFTNV73W8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GFTNV73W8L');
+    </script>
+
+    <title>룰렛 추첨 - 추첨 게임 포털</title>
+
+    <!-- SEO 기본 -->
+    <meta name="description" content="화려한 룰렛을 돌려 당첨자를 확인하세요! 직관적이고 시각적으로 즐거운 온라인 룰렛 추첨 게임.">
+    <meta name="author" content="Euiyun Edwin Kim">
+    <meta name="keywords" content="룰렛 추첨, 돌려돌려 돌림판, 추첨 게임, 온라인 추첨, 랜덤 선택, 점심 내기, 복불복">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="추첨 게임 포털">
+    <meta property="og:title" content="🎡 룰렛 추첨 - 화려한 돌림판 추첨">
+    <meta property="og:description" content="멈추지 않는 긴장감! 룰렛 바늘이 멈추는 곳이 바로 당신의 운명입니다.">
+    <meta property="og:url" content="https://geniuskey.github.io/lottery/roulette/">
+    <meta property="og:image" content="https://geniuskey.github.io/lottery/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🎡 룰렛 추첨 - 화려한 돌림판 추첨">
+    <meta name="twitter:description" content="멈추지 않는 긴장감! 룰렛 바늘이 멈추는 곳이 바로 당신의 운명입니다.">
+    <meta name="twitter:image" content="https://geniuskey.github.io/lottery/og-image.png">
+    
+    <!-- Canonical & Favicon -->
+    <link rel="canonical" href="https://geniuskey.github.io/lottery/roulette/">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>">
+    <meta name="robots" content="index, follow">
+    
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a1a;
+      --bg-sidebar: #12122a;
+      --accent-primary: #9b5de5;
+      --accent-secondary: #f15bb5;
+      --accent-gold: #ffd93d;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0c0;
+      --border-glow: rgba(155, 93, 229, 0.3);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .sidebar {
+      width: 320px;
+      min-width: 320px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-glow);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 15px;
+      height: 100vh;
+    }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .help-btn, .sound-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-glow);
+            color: var(--accent-primary);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .help-btn:hover, .sound-btn:hover {
+            background: rgba(255, 217, 61, 0.1);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-header h1 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            white-space: nowrap;
+            letter-spacing: -0.8px;
+
+            /* 프리미엄 금속 광택 효과 */
+            background: linear-gradient(
+                to right, 
+                var(--accent-primary) 0%, 
+                #fff 45%, 
+                #fff 55%, 
+                var(--accent-primary) 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .sidebar-header h1 .title-emoji {
+            filter: drop-shadow(0 0 5px rgba(255, 217, 61, 0.5));
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+    .section-title {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .participants-input {
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 12px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 80px;
+      transition: all 0.3s ease;
+    }
+
+    .participants-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 20px rgba(155, 93, 229, 0.2);
+    }
+
+    .participants-input::placeholder { color: var(--text-secondary); }
+
+    .sidebar > section:not(.rankings) {
+      flex-shrink: 0;
+    }
+
+    .settings-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 12px;
+      flex-shrink: 0;
+    }
+
+    .settings-card .section-title { margin-bottom: 8px; }
+
+    .settings-card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+
+    .setting-item label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .setting-item select {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-glow);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .setting-item select:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-start {
+      flex: 1;
+      padding: 14px 20px;
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(155, 93, 229, 0.4);
+    }
+
+    .btn-start:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-reset {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      background: var(--glass-bg);
+      color: var(--text-secondary);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--accent-secondary);
+      color: var(--accent-secondary);
+    }
+
+    .rankings {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .rankings-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--glass-bg);
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .rank-item.winner {
+      border-color: var(--accent-gold);
+      background: rgba(255, 217, 61, 0.1);
+      animation: winnerGlow 1s ease infinite alternate;
+    }
+
+    @keyframes winnerGlow {
+      from { box-shadow: 0 0 10px rgba(255, 217, 61, 0.3); }
+      to { box-shadow: 0 0 20px rgba(255, 217, 61, 0.6); }
+    }
+
+    .rank-position {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+
+    .rank-position.gold { background: linear-gradient(135deg, #ffd93d, #f0b90b); color: #000; }
+    .rank-position.silver { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); color: #000; }
+    .rank-position.bronze { background: linear-gradient(135deg, #cd7f32, #b8690e); color: #fff; }
+    .rank-position.normal { background: var(--glass-bg); color: var(--text-secondary); }
+
+    .rank-name {
+      flex: 1;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-glow);
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glow);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    .icon-btn[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-dark);
+      border: 1px solid var(--border-glow);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 100;
+    }
+
+    .game-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      min-width: 0; /* Allow shrinking in flex container */
+    }
+
+    .copyright {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.25);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .wheel-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #wheelCanvas {
+      display: block;
+      border-radius: 50%;
+      box-shadow: 0 0 50px rgba(155, 93, 229, 0.3), 0 0 100px rgba(155, 93, 229, 0.1);
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+      z-index: 10;
+    }
+
+    .wheel-center {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border: 4px solid white;
+    }
+
+    .winner-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      background: linear-gradient(135deg, var(--accent-gold), #ff9f1c);
+      color: #000;
+      padding: 30px 60px;
+      border-radius: 20px;
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 3rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 0 50px rgba(255, 217, 61, 0.6), 0 0 100px rgba(255, 217, 61, 0.3);
+      z-index: 1000;
+      text-align: center;
+      white-space: nowrap;
+      border: 6px solid #fff;
+      backdrop-filter: blur(10px);
+    }
+
+    .winner-display.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .winner-display .winner-label {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .winner-display .winner-name {
+      display: block;
+      font-size: 3.5rem;
+      text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .waiting-message {
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .waiting-message .icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-sidebar);
+      border: 1px solid var(--accent-primary);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 1rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    /* Help Modal */
+    .help-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      padding: 20px;
+    }
+
+    .help-modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .help-modal {
+      background: var(--bg-sidebar);
+      border: 2px solid var(--accent-primary);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .help-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-glow);
+    }
+
+    .help-modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: var(--accent-primary);
+    }
+
+    .help-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glow);
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .help-close-btn:hover {
+      border-color: var(--accent-secondary);
+      color: var(--accent-secondary);
+    }
+
+    .help-section {
+      margin-bottom: 20px;
+    }
+
+    .help-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+    }
+
+    .help-section p, .help-section li {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .help-section ul {
+      padding-left: 20px;
+    }
+
+    .help-highlight {
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      body { flex-direction: column-reverse; overflow-y: auto; height: auto; }
+      .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: none;
+        border-right: none;
+        border-top: 1px solid var(--border-glow);
+        padding: 15px;
+      }
+      .rankings { max-height: 200px; min-height: 100px; }
+      .game-area { 
+        flex: none; 
+        width: 100%;
+        height: 60vh; 
+        min-height: 400px;
+        padding: 10px;
+      }
+      .winner-display {
+        font-size: 2rem;
+        padding: 20px 40px;
+      }
+      .winner-display .winner-name {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(155, 93, 229, 0.3);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+            <header class="sidebar-header">
+                <h1><span class="title-emoji">🎡</span> <span class="title-text">룰렛 추첨</span></h1>
+                <div class="header-btns">
+                    <button class="sound-btn" id="soundToggle" title="소리 켜기/끄기">🔊</button>
+                    <button class="help-btn" id="helpBtn">?</button>
+                </div>
+            </header>
+
+    <section>
+      <div class="section-title">👥 참여자 명단</div>
+      <textarea class="participants-input" id="participantsInput" placeholder="이름을 입력하세요 (줄바꿈 또는 쉼표)&#10;예: 철수, 영희*3, 민수">영수, 영호, 영식, 영철, 광수, 상철</textarea>
+    </section>
+
+    <section class="settings-card">
+      <div class="section-title">⚙️ 게임 설정</div>
+      <div class="settings-card-content">
+        <div class="setting-item">
+          <label>🏆 당첨자 수</label>
+          <select id="winnerCount">
+            <option value="1" selected>1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label>⏱️ 스핀 시간</label>
+          <select id="spinDuration">
+            <option value="3">3초</option>
+            <option value="5" selected>5초</option>
+            <option value="7">7초</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <div class="btn-group">
+      <button class="btn-start" id="startBtn">🎡 돌리기</button>
+      <button class="btn-reset" id="resetBtn">↺</button>
+    </div>
+
+    <section class="rankings">
+      <div class="section-title">🏆 당첨자</div>
+      <div class="rankings-list" id="rankingsList">
+        <div class="waiting-message" style="padding: 20px; text-align: center;">
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">룰렛을 돌려주세요!</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="sidebar-footer">
+      <a href="../" class="icon-btn" data-tooltip="추첨 포탈 홈">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </a>
+      <button class="icon-btn" id="copyResultBtn" data-tooltip="결과 복사">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+      <a href="https://github.com/geniuskey/lottery" target="_blank" class="icon-btn" data-tooltip="GitHub 저장소">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+      </a>
+      <a href="https://buymeacoffee.com/euiyun" target="_blank" class="icon-btn" data-tooltip="커피 사주기 ☕">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.2-1.756.205-.656.004-1.31-.025-1.966-.022-.699.004-1.556-.06-2.095-.58-.475-.458-.54-1.174-.605-1.793l-.731-7.013-.322-3.094c-.037-.351-.286-.695-.678-.678-.336.015-.718.3-.678.679l.228 2.185.949 9.112c.147 1.344 1.174 2.068 2.446 2.272.742.12 1.503.144 2.257.156.966.016 1.942.053 2.892-.122 1.408-.258 2.465-1.198 2.616-2.657.34-3.332.683-6.663 1.024-9.995l.215-2.087a.484.484 0 01.39-.426c.402-.078.787-.212 1.074-.518.455-.488.546-1.124.385-1.766zm-1.478.772c-.145.137-.363.201-.578.233-2.416.359-4.866.54-7.308.46-1.748-.06-3.477-.254-5.207-.498-.17-.024-.353-.055-.47-.18-.22-.236-.111-.71-.054-.995.052-.26.152-.609.463-.646.484-.057 1.046.148 1.526.22.577.088 1.156.159 1.737.212 2.48.226 5.002.19 7.472-.14.45-.06.899-.13 1.345-.21.399-.072.84-.206 1.08.206.166.281.188.657.162.974a.544.544 0 01-.169.364z"></path></svg>
+      </a>
+    </div>
+  </aside>
+
+  <main class="game-area" id="gameArea">
+    <div class="waiting-message" id="waitingMessage">
+      <div class="icon">🎡</div>
+      <p>참여자를 입력하고 룰렛을 돌리세요!</p>
+    </div>
+    <div class="wheel-container" id="wheelContainer" style="display: none;">
+      <div class="wheel-pointer">▼</div>
+      <canvas id="wheelCanvas"></canvas>
+      <div class="wheel-center">🎯</div>
+    </div>
+    <div class="winner-display" id="winnerDisplay"></div>
+    <div class="copyright">© 2025 Euiyun Edwin Kim</div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="help-modal-overlay" id="helpModalOverlay">
+    <div class="help-modal">
+      <div class="help-modal-header">
+        <h2 class="help-modal-title">📖 게임 설명</h2>
+        <button class="help-close-btn" id="helpCloseBtn">✕</button>
+      </div>
+
+      <div class="help-section">
+        <div class="help-section-title">🎡 게임 개요</div>
+        <p>룰렛 추첨은 화려한 룰렛 휠을 돌려 행운의 당첨자를 선정하는 게임입니다.</p>
+      </div>
+
+      <div class="help-section">
+        <div class="help-section-title">🎮 게임 방법</div>
+        <ul>
+          <li>참여자 명단을 입력합니다.</li>
+          <li>당첨자 수와 스핀 시간을 설정합니다.</li>
+          <li><span class="help-highlight">🎡 돌리기</span> 버튼을 누르면 룰렛이 회전합니다.</li>
+          <li>룰렛이 멈추면 화살표가 가리키는 사람이 당첨!</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <div class="help-section-title">💡 팁</div>
+        <p><span class="help-highlight">이름*숫자</span> 형식으로 입력하면 같은 이름으로 여러 명을 추가할 수 있습니다. (예: 영희*3)</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Copyright (c) 2025 Euiyun Kim (geniuskey@gmail.com)
+
+    class SoundManager {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.setupToggleButton();
+      }
+
+      setupToggleButton() {
+        const btn = document.getElementById('soundToggle');
+        if (btn) {
+          btn.onclick = () => {
+            this.enabled = !this.enabled;
+            btn.textContent = this.enabled ? '🔊' : '🔇';
+            if (this.enabled && this.ctx && this.ctx.state === 'suspended') {
+              this.ctx.resume();
+            }
+          };
+        }
+      }
+
+      init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      playStart() {
+        if (!this.enabled || !this.ctx) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.1);
+      }
+
+      playTick() {
+        if (!this.enabled || !this.ctx) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playWin() {
+        if (!this.enabled || !this.ctx) return;
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.1);
+          gain.gain.setValueAtTime(0, this.ctx.currentTime + i * 0.1);
+          gain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + i * 0.1 + 0.05);
+          gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + i * 0.1 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.1);
+          osc.stop(this.ctx.currentTime + i * 0.1 + 0.4);
+        });
+      }
+    }
+
+    const COLORS = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+      '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+      '#F8B500', '#00CED1', '#FF69B4', '#32CD32', '#FFD700'
+    ];
+
+    class RouletteGame {
+      constructor() {
+        this.participants = [];
+        this.winners = [];
+        this.isSpinning = false;
+        this.currentAngle = 0;
+        this.maxWinners = 1;
+        this.spinDuration = 5;
+        this.animationId = null;
+        this.sound = new SoundManager();
+
+        this.initElements();
+        this.bindEvents();
+        this.loadSettings();
+        this.updateWheelState();
+      }
+
+      initElements() {
+        this.participantsInput = document.getElementById('participantsInput');
+        this.winnerCountSelect = document.getElementById('winnerCount');
+        this.spinDurationSelect = document.getElementById('spinDuration');
+        this.startBtn = document.getElementById('startBtn');
+        this.resetBtn = document.getElementById('resetBtn');
+        this.rankingsList = document.getElementById('rankingsList');
+        this.gameArea = document.getElementById('gameArea');
+        this.waitingMessage = document.getElementById('waitingMessage');
+        this.wheelContainer = document.getElementById('wheelContainer');
+        this.canvas = document.getElementById('wheelCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.winnerDisplay = document.getElementById('winnerDisplay');
+        this.copyResultBtn = document.getElementById('copyResultBtn');
+        this.toast = document.getElementById('toast');
+        this.helpBtn = document.getElementById('helpBtn');
+        this.helpModalOverlay = document.getElementById('helpModalOverlay');
+        this.helpCloseBtn = document.getElementById('helpCloseBtn');
+      }
+
+      bindEvents() {
+        this.startBtn.addEventListener('click', () => {
+            this.spin();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        this.resetBtn.addEventListener('click', () => this.reset());
+        this.copyResultBtn.addEventListener('click', () => this.copyResult());
+        this.helpBtn.addEventListener('click', () => this.showHelp());
+        this.helpCloseBtn.addEventListener('click', () => this.hideHelp());
+        this.helpModalOverlay.addEventListener('click', (e) => {
+          if (e.target === this.helpModalOverlay) this.hideHelp();
+        });
+
+        this.winnerCountSelect.addEventListener('change', () => {
+          this.saveSettings();
+          this.updateWheelState();
+        });
+        this.spinDurationSelect.addEventListener('change', () => this.saveSettings());
+        this.participantsInput.addEventListener('input', () => {
+          this.saveSettings();
+          if (!this.isSpinning) {
+            this.updateWheelState();
+          }
+        });
+
+        window.addEventListener('resize', () => {
+          if (this.participants.length > 0) {
+            this.drawWheel();
+          }
+        });
+      }
+
+      loadSettings() {
+        const settings = JSON.parse(localStorage.getItem('rouletteSettings') || '{}');
+        if (settings.winnerCount) this.winnerCountSelect.value = settings.winnerCount;
+        if (settings.spinDuration) this.spinDurationSelect.value = settings.spinDuration;
+        if (settings.participants) this.participantsInput.value = settings.participants;
+      }
+
+      saveSettings() {
+        const settings = {
+          winnerCount: this.winnerCountSelect.value,
+          spinDuration: this.spinDurationSelect.value,
+          participants: this.participantsInput.value
+        };
+        localStorage.setItem('rouletteSettings', JSON.stringify(settings));
+      }
+
+      parseParticipants() {
+        const text = this.participantsInput.value.trim();
+        if (!text) return [];
+        const names = text.split(/[,\n]/).map(n => n.trim()).filter(n => n);
+        const result = [];
+        const usedNames = new Set();
+
+        const addUniqueName = (baseName) => {
+          let name = baseName;
+          let counter = 1;
+          while (usedNames.has(name)) {
+            counter++;
+            name = `${baseName}(${counter})`;
+          }
+          usedNames.add(name);
+          result.push(name);
+        };
+
+        for (const rawName of names) {
+          const match = rawName.match(/^(.+)\*(\d+)$/);
+          if (match) {
+            const baseName = match[1].trim();
+            const count = Math.min(100, parseInt(match[2]) || 1);
+            for (let i = 0; i < count; i++) {
+              addUniqueName(baseName);
+            }
+          } else {
+            addUniqueName(rawName);
+          }
+        }
+        return result;
+      }
+
+      updateButtonState() {
+        const allParticipants = this.parseParticipants();
+        this.maxWinners = parseInt(this.winnerCountSelect.value);
+
+        if (allParticipants.length === 0) {
+          this.waitingMessage.style.display = 'block';
+          this.wheelContainer.style.display = 'none';
+          this.startBtn.disabled = true;
+          return;
+        }
+
+        this.waitingMessage.style.display = 'none';
+        this.wheelContainer.style.display = 'flex';
+
+        if (this.winners.length >= this.maxWinners) {
+          this.startBtn.disabled = false;
+          this.startBtn.textContent = '🔄 다시 시작하기';
+        } else if (allParticipants.length - this.winners.length === 0) {
+          this.startBtn.disabled = true;
+          this.startBtn.textContent = '🎡 참여자 없음';
+        } else {
+          this.startBtn.disabled = false;
+          this.startBtn.textContent = this.winners.length > 0 ? '🎡 다시 돌리기' : '🎡 돌리기';
+        }
+      }
+
+      updateWheelState() {
+        const allParticipants = this.parseParticipants();
+        this.participants = allParticipants.filter(p => !this.winners.includes(p));
+        
+        this.updateButtonState();
+        this.drawWheel();
+      }
+
+      drawWheel() {
+        const container = this.gameArea;
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Calculate container-aware size
+        const padding = 40;
+        const size = Math.min(container.clientWidth, container.clientHeight) - padding;
+        const wheelSize = Math.max(200, size); // Reduce floor to 200px
+
+        // Set logical display size
+        this.canvas.style.width = `${wheelSize}px`;
+        this.canvas.style.height = `${wheelSize}px`;
+        
+        // Ensure container matches wheel size for correct pointer positioning
+        this.wheelContainer.style.width = `${wheelSize}px`;
+        this.wheelContainer.style.height = `${wheelSize}px`;
+        
+        // Set actual pixel resolution
+        this.canvas.width = wheelSize * dpr;
+        this.canvas.height = wheelSize * dpr;
+
+        const ctx = this.ctx;
+        ctx.save();
+        ctx.scale(dpr, dpr); // Handle high DPI
+        
+        const centerX = wheelSize / 2;
+        const centerY = wheelSize / 2;
+        const radius = wheelSize / 2 - 10;
+
+        const currentParticipants = this.participants.length > 0 ? this.participants : ['?'];
+        const sliceAngle = (2 * Math.PI) / currentParticipants.length;
+
+        ctx.clearRect(0, 0, wheelSize, wheelSize);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(this.currentAngle);
+        ctx.translate(-centerX, -centerY);
+
+        currentParticipants.forEach((name, i) => {
+          const startAngle = i * sliceAngle - Math.PI / 2;
+          const endAngle = startAngle + sliceAngle;
+
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+          ctx.closePath();
+          ctx.fillStyle = COLORS[i % COLORS.length];
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(startAngle + sliceAngle / 2);
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#000';
+          const fontSize = Math.max(10, Math.min(18, radius / 8));
+          ctx.font = `bold ${fontSize}px 'Noto Sans KR'`;
+          const displayName = name.length > 8 ? name.substring(0, 7) + '..' : name;
+          ctx.fillText(displayName, radius - 20, fontSize / 3);
+          ctx.restore();
+        });
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        ctx.restore();
+        ctx.restore(); // Restore dpr scale
+      }
+
+      spin() {
+        if (this.isSpinning) return;
+        this.sound.init();
+        
+        // 당첨자 선정 완료 후 다시 시작하거나, 다음 당첨자를 위해 휠 갱신
+        const isGameFinished = this.winners.length >= parseInt(this.winnerCountSelect.value);
+        if (isGameFinished) {
+          this.winners = [];
+          this.currentAngle = 0; // 새 게임 시작 시 각도 초기화
+          this.updateRankings(); // 당첨자 현황 리스트 초기화
+          this.updateWheelState();
+        } else {
+          // 다음 당첨자 추첨 시 현재 각도를 유지하며 참여자만 제거
+          this.updateWheelState();
+        }
+
+        if (this.participants.length === 0) {
+          this.showToast('참여자가 없습니다!');
+          return;
+        }
+
+        this.isSpinning = true;
+        this.startBtn.disabled = true;
+        this.winnerDisplay.classList.remove('show');
+        this.sound.playStart();
+
+        // 정밀한 시작 각도 계산 (0 ~ 2PI 사이로 정규화)
+        const normalizedStartAngle = ((this.currentAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        this.currentAngle = normalizedStartAngle;
+
+        const currentParticipants = this.participants;
+        const sliceAngle = (2 * Math.PI) / currentParticipants.length;
+        const winnerIndex = Math.floor(Math.random() * currentParticipants.length);
+
+        // 목표 각도: (한 바퀴 - 슬라이스 중심 각도) + 여러 번의 회전
+        // 슬라이스 i의 중심 각도는 (i + 0.5) * sliceAngle 임
+        const rotations = 10 + Math.floor(Math.random() * 5); // 최소 10바퀴 이상
+        const targetRotation = rotations * 2 * Math.PI - (winnerIndex + 0.5) * sliceAngle;
+        
+        const startTime = performance.now();
+        const duration = parseInt(this.spinDurationSelect.value) * 1000;
+        let lastTickAngle = normalizedStartAngle;
+
+        const animate = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing: Quintic Out (더 부드럽게 멈춤)
+          const easeOut = 1 - Math.pow(1 - progress, 5);
+          
+          const prevAngle = this.currentAngle;
+          this.currentAngle = normalizedStartAngle + (targetRotation - normalizedStartAngle) * easeOut;
+          
+          // Tick sound logic
+          const sliceSize = (2 * Math.PI) / currentParticipants.length;
+          const currentTickPos = Math.floor((this.currentAngle + Math.PI / 2) / sliceSize);
+          const lastTickPos = Math.floor((prevAngle + Math.PI / 2) / sliceSize);
+          
+          if (currentTickPos !== lastTickPos) {
+            this.sound.playTick();
+          }
+
+          this.drawWheel();
+
+          if (progress < 1) {
+            this.animationId = requestAnimationFrame(animate);
+          } else {
+            // 마지막 위치 정확히 고정
+            this.currentAngle = targetRotation;
+            this.drawWheel();
+            this.onSpinComplete(currentParticipants[winnerIndex]);
+          }
+        };
+
+        this.animationId = requestAnimationFrame(animate);
+      }
+
+      onSpinComplete(winner) {
+        this.isSpinning = false;
+        this.winners.push(winner);
+        this.currentAngle = this.currentAngle % (2 * Math.PI);
+        this.sound.playWin();
+
+        // Show winner with rich format
+        this.winnerDisplay.innerHTML = `
+          <span class="winner-label">🎊 CONGRATULATIONS 🎊</span>
+          <span class="winner-name">${winner}</span>
+        `;
+        this.winnerDisplay.classList.add('show');
+
+        // Hide winner display after 4 seconds automatically to allow next interaction
+        setTimeout(() => {
+          this.winnerDisplay.classList.remove('show');
+        }, 4000);
+
+        this.createConfetti();
+        this.updateRankings();
+        
+        // 중요: 당첨 즉시 휠을 갱신하지 않고 버튼 상태만 업데이트함
+        // 이를 통해 당첨자가 화살표가 가리키는 위치에 그대로 남아있게 됨
+        this.updateButtonState();
+      }
+
+      updateRankings() {
+        if (this.winners.length === 0) {
+          this.rankingsList.innerHTML = `
+            <div class="waiting-message" style="padding: 20px; text-align: center;">
+              <p style="font-size: 0.9rem; color: var(--text-secondary);">룰렛을 돌려주세요!</p>
+            </div>
+          `;
+          return;
+        }
+
+        const medals = ['🥇', '🥈', '🥉'];
+        let html = '';
+
+        this.winners.forEach((name, i) => {
+          const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
+          html += `
+            <div class="rank-item winner">
+              <div class="rank-position ${posClass}">${medals[i] || (i + 1)}</div>
+              <div class="rank-name">${name}</div>
+            </div>
+          `;
+        });
+
+        this.rankingsList.innerHTML = html;
+      }
+
+      reset() {
+        if (this.animationId) {
+          cancelAnimationFrame(this.animationId);
+        }
+        this.isSpinning = false;
+        this.winners = [];
+        this.currentAngle = 0;
+        this.winnerDisplay.classList.remove('show');
+        this.updateRankings();
+        this.updateWheelState();
+      }
+
+      copyResult() {
+        if (this.winners.length === 0) {
+          this.showToast('복사할 결과가 없습니다!');
+          return;
+        }
+
+        const medals = ['🥇', '🥈', '🥉'];
+        let result = '🎡 룰렛 추첨 결과\n';
+        result += '─'.repeat(20) + '\n';
+        this.winners.forEach((name, i) => {
+          result += `${medals[i] || '🏅'} ${i + 1}등: ${name}\n`;
+        });
+
+        navigator.clipboard.writeText(result).then(() => {
+          this.showToast('결과가 복사되었습니다! 📋');
+        }).catch(() => {
+          this.showToast('복사에 실패했습니다.');
+        });
+      }
+
+      showToast(message) {
+        this.toast.textContent = message;
+        this.toast.classList.add('show');
+        setTimeout(() => this.toast.classList.remove('show'), 2500);
+      }
+
+      showHelp() {
+        this.helpModalOverlay.classList.add('show');
+      }
+
+      hideHelp() {
+        this.helpModalOverlay.classList.remove('show');
+      }
+
+      createConfetti() {
+        const colors = ['#ffd93d', '#ff6b6b', '#9b5de5', '#f15bb5', '#00f5d4'];
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = (Math.random() * 10 + 5) + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            document.body.appendChild(confetti);
+
+            confetti.animate([
+              { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+              { transform: `translateY(100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+            ], {
+              duration: 2000 + Math.random() * 2000,
+              easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            }).onfinish = () => confetti.remove();
+          }, i * 30);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      new RouletteGame();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1796 @@
+<!--
+@game-meta
+{
+  "id": "zombie-arena",
+  "title": "좀비 아레나",
+  "emoji": "🧟",
+  "category": "서바이벌",
+  "description": "좀비를 피해 생존하세요! 영역이 점점 축소됩니다.",
+  "features": ["🔥 영역 축소", "👁️ 시야 시스템"],
+  "color": "zombie",
+  "badge": null,
+  "version": "1.2.0",
+  "updated": "2025-01-15",
+  "author": {
+    "name": "Euiyun Edwin Kim",
+    "email": "geniuskey@gmail.com",
+    "github": "geniuskey"
+  },
+  "urls": {
+    "service": "https://geniuskey.github.io/lottery/zombie-arena/",
+    "repository": "https://github.com/geniuskey/lottery"
+  },
+  "license": "MIT",
+  "copyright": "© 2025 Euiyun Edwin Kim. Licensed under the MIT License."
+}
+@end-game-meta
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFTNV73W8L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GFTNV73W8L');
+    </script>
+
+    <title>좀비 아레나 - 추첨 게임 포털</title>
+
+    <!-- SEO 기본 -->
+    <meta name="description" content="좀비를 피해 끝까지 생존하세요! 영역이 점점 축소되는 긴장감 넘치는 온라인 서바이벌 추첨 게임.">
+    <meta name="author" content="Euiyun Edwin Kim">
+    <meta name="keywords" content="좀비 아레나, 좀비 게임, 서바이벌 게임, 추첨 게임, 온라인 추첨, 랜덤 선택, 레크리에이션">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="추첨 게임 포털">
+    <meta property="og:title" content="🧟 좀비 아레나 - 실시간 서바이벌 추첨">
+    <meta property="og:description" content="좀비들의 습격을 피해 최후의 생존자가 되세요! 손에 땀을 쥐게 하는 추첨 게임.">
+    <meta property="og:url" content="https://geniuskey.github.io/lottery/zombie-arena/">
+    <meta property="og:image" content="https://geniuskey.github.io/lottery/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🧟 좀비 아레나 - 실시간 서바이벌 추첨">
+    <meta name="twitter:description" content="좀비들의 습격을 피해 최후의 생존자가 되세요! 손에 땀을 쥐게 하는 추첨 게임.">
+    <meta name="twitter:image" content="https://geniuskey.github.io/lottery/og-image.png">
+    
+    <!-- Canonical & Favicon -->
+    <link rel="canonical" href="https://geniuskey.github.io/lottery/zombie-arena/">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧟</text></svg>">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧟</text></svg>">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0f0a;
+            --bg-gradient: linear-gradient(135deg, #0a0f0a 0%, #1a2e1a 50%, #162116 100%);
+            --accent-red: #ff3333;
+            --accent-green: #33ff33;
+            --accent-purple: #9933ff;
+            --glass: rgba(0, 0, 0, 0.6);
+            --glass-border: rgba(100, 255, 100, 0.2);
+            --bg-card: rgba(20, 20, 20, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --text-primary: #fff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h1 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            white-space: nowrap;
+            letter-spacing: -0.8px;
+
+            /* 프리미엄 금속 광택 효과 */
+            background: linear-gradient(
+                to right, 
+                var(--accent-red) 0%, 
+                #fff 45%, 
+                #fff 55%, 
+                var(--accent-red) 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .sidebar-header h1 .title-emoji {
+            filter: drop-shadow(0 0 5px rgba(255, 68, 68, 0.5));
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+        .logo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent-red);
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .help-btn, .sound-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover, .sound-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .section {
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .participants-input {
+            width: 100%;
+            height: 80px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 10px;
+            font-size: 0.85rem;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .participants-input::placeholder { color: var(--text-secondary); }
+        .participants-input:focus { outline: none; border-color: var(--accent-red); }
+
+        .hint {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .slider-group { margin-bottom: 12px; }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .slider-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .slider-value { font-size: 0.9rem; font-weight: bold; color: var(--accent-red); }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--glass-border);
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-red), #cc0000);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            flex: 0 0 50px;
+        }
+
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .ranking-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .ranking-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .ranking-item.infected { background: rgba(255, 50, 50, 0.15); border-left: 2px solid var(--accent-red); }
+        .ranking-item.survivor { background: rgba(50, 255, 50, 0.15); border-left: 2px solid var(--accent-green); }
+        .ranking-item.winner { background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 150, 0, 0.3)); border-left: 2px solid gold; }
+        .ranking-divider { border-top: 1px dashed rgba(255, 255, 255, 0.2); margin: 8px 0; }
+
+        .ranking-rank { width: 24px; font-weight: bold; color: var(--text-secondary); }
+        .ranking-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ranking-status { font-size: 0.65rem; color: var(--text-secondary); }
+        .ranking-placeholder { text-align: center; color: var(--text-secondary); font-size: 0.75rem; padding: 20px; }
+
+        .sidebar-footer {
+            padding: 15px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        [data-tooltip] { position: relative; }
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            margin-bottom: 5px;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0a0f0a;
+            position: relative;
+        }
+
+        .arena-header {
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--glass-border);
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .shrink-warning {
+            position: absolute;
+            left: 15px;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.3), transparent);
+            color: var(--accent-red);
+            font-weight: bold;
+            font-size: 0.8rem;
+            animation: pulse 0.5s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .timer-display {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-bar { display: flex; gap: 15px; font-size: 0.9rem; justify-self: end; }
+        .status-item { display: flex; align-items: center; gap: 5px; }
+        .status-item.humans { color: var(--accent-green); }
+        .status-item.zombies { color: var(--accent-red); }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.show { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .help-section { margin-bottom: 15px; }
+        .help-section h3 { font-size: 0.9rem; color: var(--accent-red); margin-bottom: 8px; }
+        .help-section p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-red), #cc0000);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .winner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+        }
+
+        .winner-overlay.show { opacity: 1; visibility: visible; }
+
+        .winner-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            margin-bottom: 20px;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.5); }
+        }
+
+        .winner-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .winner-stats { font-size: 1rem; color: var(--text-secondary); margin-bottom: 30px; }
+        .winner-overlay .modal-btn { width: auto; padding: 12px 40px; font-size: 0.9rem; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 255, 51, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #fff;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body { overflow-y: auto; height: auto; }
+            .container { flex-direction: column-reverse; height: auto; padding: 0; gap: 0; }
+            .sidebar {
+                width: 100%;
+                min-width: unset;
+                height: auto;
+                max-height: none;
+                border-right: none;
+                border-top: 1px solid var(--glass-border);
+                overflow-y: visible;
+                padding: 20px;
+            }
+            .sidebar-content { flex: none; }
+            .ranking-section { flex: none; min-height: 200px; max-height: 300px; }
+            .game-area { flex: none; width: 100%; height: 75vh; min-height: 500px; padding: 0; }
+            #gameCanvas { border-radius: 0; }
+            .winner-name { font-size: 2rem; }
+            .winner-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1><span class="title-emoji">🧟</span> <span class="title-text">좀비 아레나</span></h1>
+            <div class="header-btns">
+                <select id="langSelect" class="lang-select">
+                    <option value="ko">KO</option>
+                    <option value="en">EN</option>
+                    <option value="zh">ZH</option>
+                </select>
+                <button class="sound-btn" id="soundToggle" title="소리 켜기/끄기">🔊</button>
+                <button class="help-btn" id="helpBtn">?</button>
+            </div>
+        </div>
+            <div class="sidebar-content">
+                <div class="section">
+                    <div class="section-title" data-i18n="participants">참여자 명단</div>
+                    <textarea class="participants-input" id="participants" data-placeholder-i18n="participantsPlaceholder" placeholder="이름을 입력하세요 (줄바꿈 또는 쉼표)&#10;예: 철수, 영희*3, 민수">영수, 영호, 영식, 영철, 광수, 상철</textarea>
+                    <div class="hint" data-i18n="hint">쉼표 또는 줄바꿈으로 구분</div>
+                </div>
+                <div class="section">
+                    <div class="slider-group">
+                        <div class="slider-header"><span class="slider-label" data-i18n="initialZombies">🧟 초기 좀비 수</span><span class="slider-value" id="zombieValue">3</span></div>
+                        <input type="range" id="zombieCount" min="1" max="5" value="3">
+                    </div>
+                    <div class="slider-group">
+                        <div class="slider-header"><span class="slider-label" data-i18n="survivors">🏆 최종 생존자 수</span><span class="slider-value" id="survivorValue">1</span></div>
+                        <input type="range" id="survivorCount" min="1" max="5" value="1">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="startBtn" data-i18n="start">🎮 시작</button>
+                    <button class="btn btn-secondary" id="resetBtn">↺</button>
+                </div>
+                <div class="section" style="margin-top:15px;flex:1;display:flex;flex-direction:column;min-height:0">
+                    <div class="ranking-section">
+                        <div class="ranking-title" data-i18n="infectionOrder">🏆 감염 순서</div>
+                        <div class="ranking-list" id="rankingList"><div class="ranking-placeholder" data-i18n="rankingPlaceholder">게임을 시작하면<br>감염 순서가 표시됩니다</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <a href="../" class="icon-btn" data-tooltip="추첨 포탈 홈"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+                <button class="icon-btn" id="copyResultBtn" data-tooltip-i18n="copyResult" data-tooltip="결과 복사"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                <a href="https://github.com/geniuskey/lottery" target="_blank" class="icon-btn" data-tooltip-i18n="github" data-tooltip="GitHub 저장소"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg></a>
+                <a href="https://buymeacoffee.com/euiyun" target="_blank" class="icon-btn" data-tooltip-i18n="coffee" data-tooltip="커피 사주기 ☕"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.2-1.756.205-.656.004-1.31-.025-1.966-.022-.699.004-1.556-.06-2.095-.58-.475-.458-.54-1.174-.605-1.793l-.731-7.013-.322-3.094c-.037-.351-.286-.695-.678-.678-.336.015-.718.3-.678.679l.228 2.185.949 9.112c.147 1.344 1.174 2.068 2.446 2.272.742.12 1.503.144 2.257.156.966.016 1.942.053 2.892-.122 1.408-.258 2.465-1.198 2.616-2.657.34-3.332.683-6.663 1.024-9.995l.215-2.087a.484.484 0 01.39-.426c.402-.078.787-.212 1.074-.518.455-.488.546-1.124.385-1.766zm-1.478.772c-.145.137-.363.201-.578.233-2.416.359-4.866.54-7.308.46-1.748-.06-3.477-.254-5.207-.498-.17-.024-.353-.055-.47-.18-.22-.236-.111-.71-.054-.995.052-.26.152-.609.463-.646.484-.057 1.046.148 1.526.22.577.088 1.156.159 1.737.212 2.48.226 5.002.19 7.472-.14.45-.06.899-.13 1.345-.21.399-.072.84-.206 1.08.206.166.281.188.657.162.974a.544.544 0 01-.169.364z"></path></svg></a>
+            </div>
+        </aside>
+        <main class="game-area">
+            <div class="arena-header">
+                <div class="shrink-warning" id="shrinkWarning">⚠️ 영역 축소!</div>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="status-bar">
+                    <div class="status-item humans">🧑 <span id="humanCount">0</span></div>
+                    <div class="status-item zombies">🧟 <span id="zombieCountDisplay">0</span></div>
+                </div>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="gameCanvas"></canvas>
+                <div class="copyright">© 2025 Euiyun Edwin Kim</div>
+            </div>
+        </main>
+    </div>
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <h2 class="modal-title" data-i18n="helpTitle">🧟 좀비 아레나 게임</h2>
+            <div class="help-section"><h3 data-i18n="helpRulesTitle">🎮 게임 규칙</h3><p data-i18n="helpRules">참여자들이 아레나에서 좀비를 피해 생존합니다. 최종 생존자 수만큼 남으면 게임 종료!</p></div>
+            <div class="help-section"><h3 data-i18n="helpMovementTitle">🏃 이동 시스템</h3><p data-i18n="helpMovement">• 인간이 좀비를 보면 반대 방향으로 전력 질주<br>• 좀비는 시야가 좁지만 인간보다 멀리 봅니다<br>• 초기 좀비는 한 번 물면 죽습니다</p></div>
+            <div class="help-section"><h3 data-i18n="helpShrinkTitle">🔥 영역 축소</h3><p data-i18n="helpShrink">• 시간이 지나면 영역이 축소됩니다<br>• 좀비가 10마리를 초과하면 오래된 좀비부터 굶어 죽습니다</p></div>
+            <button class="modal-btn" id="closeHelpBtn" data-i18n="understood">이해했습니다!</button>
+        </div>
+    </div>
+    <div class="winner-overlay" id="winnerOverlay">
+        <div class="winner-title" data-i18n="finalSurvivor">🏆 최후의 생존자! 🏆</div>
+        <div class="winner-name" id="winnerName"></div>
+        <div class="winner-stats" id="winnerStats"></div>
+        <button class="modal-btn" id="closeWinnerBtn" data-i18n="confirm">확인</button>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+/**
+ * Zombie Arena (좀비 아레나)
+ * ------------------------------------------------------------
+ * Original Copyright Notice
+ *
+ * Copyright (c) 2025 Euiyun Kim (geniuskey@gmail.com)
+ *
+ * This web application is an original creation by the developer known as
+ * "geniuskey". Any third-party registration of this work, including copyright
+ * filings made without the author's consent, does not invalidate the author's
+ * original rights under Korean Copyright Law and international copyright
+ * principles.
+ *
+ * Notes:
+ * - Copyright is automatically granted upon creation (“무조건 자동 발생”).
+ * - Copyright registration by unrelated parties does NOT transfer ownership.
+ * - MIT License permits reuse but does NOT abandon authorship or ownership.
+ * - Unauthorized registration by third parties shall be considered invalid.
+ *
+ * Original Creator: Euiyun Kim (geniuskey@gmail.com)
+ * Service Web Page: https://geniuskey.github.io/zombie-area/
+ * ------------------------------------------------------------
+ */
+
+class SoundManager {
+    constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.setupToggleButton();
+    }
+
+    setupToggleButton() {
+        const btn = document.getElementById('soundToggle');
+        if (btn) {
+            btn.onclick = () => {
+                this.enabled = !this.enabled;
+                btn.textContent = this.enabled ? '🔊' : '🔇';
+                if (this.enabled && this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            };
+        }
+    }
+
+    init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    playStart() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, this.ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.5);
+    }
+
+    playInfect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(40, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.2);
+    }
+
+    playShrink() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 0.1);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.5);
+    }
+
+    playWin() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.1);
+            gain.gain.setValueAtTime(0, this.ctx.currentTime + i * 0.1);
+            gain.gain.linearRampToValueAtTime(0.1, this.ctx.currentTime + i * 0.1 + 0.05);
+            gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + i * 0.1 + 0.4);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + i * 0.1);
+            osc.stop(this.ctx.currentTime + i * 0.1 + 0.4);
+        });
+    }
+
+    playDeath() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'brown' || 'sine'; 
+        osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(20, this.ctx.currentTime + 0.8);
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.8);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.8);
+    }
+}
+
+const i18n = {
+    ko: {
+        title: '좀비 아레나', participants: '참여자 명단',
+        participantsPlaceholder: '이름을 입력하세요\n예: 철수, 영희, 민수',
+        hint: '쉼표 또는 줄바꿈으로 구분', initialZombies: '🧟 초기 좀비 수',
+        survivors: '🏆 최종 생존자 수', start: '🎮 시작', infectionOrder: '🏆 감염 순서',
+        rankingPlaceholder: '게임을 시작하면<br>감염 순서가 표시됩니다',
+        copyResult: '결과 복사', github: 'GitHub 저장소', coffee: '개발자에게 커피 사주기 ☕',
+        finalSurvivor: '최후의 생존자!', survivalTime: '생존 시간: {time}초', confirm: '확인',
+        helpTitle: '🧟 좀비 아레나 게임', helpRulesTitle: '🎮 게임 규칙',
+        helpRules: '참여자들이 아레나에서 좀비를 피해 생존합니다. 최종 생존자 수만큼 남으면 게임 종료!',
+        helpMovementTitle: '🏃 이동 시스템',
+        helpMovement: '• 인간이 좀비를 보면 반대 방향으로 전력 질주<br>• 좀비는 시야가 좁지만 인간보다 멀리 봅니다<br>• 초기 좀비는 한 번 물면 죽습니다',
+        helpShrinkTitle: '🔥 영역 축소',
+        helpShrink: '• 시간이 지나면 영역이 축소됩니다<br>• 좀비가 10마리를 초과하면 오래된 좀비부터 굶어 죽습니다',
+        understood: '이해했습니다!', copied: '📋 결과가 복사되었습니다!', copyFailed: '❌ 복사 실패',
+        minParticipants: '최소 2명 이상의 참여자가 필요합니다!',
+        survivorError: '최종 생존자 수는 참여자 수보다 적어야 합니다!',
+        initialZombie: '초기 좀비', infected: '감염', zoneOut: '영역 이탈', survivor: '생존', winner: '승리!',
+        resultTitle: '🧟 좀비 아레나 결과 🧟', gameTime: '⏱️ 게임 시간: {time}초',
+        finalSurvivors: '🏆 최종 생존자', infectionOrderResult: '💀 감염 순서',
+        zombieNames: ['좀비A','좀비B','좀비C','좀비D','좀비E','좀비F','좀비G','좀비H','좀비I','좀비J'],
+        shrinkWarning: '⚠️ 영역 축소!',
+        infectMessage: '{attacker}가 {victim}을(를) 물어 뜯어 좀비로 만들었습니다!',
+        zombieDied: '{name}가 굶어 죽었습니다.', zoneOutMessage: '{name}이(가) 영역 밖으로 밀려났습니다!'
+    },
+    en: {
+        title: 'Zombie Arena', participants: 'Participants',
+        participantsPlaceholder: 'Enter names\nEx: John, Jane, Mike',
+        hint: 'Separate by comma or newline', initialZombies: '🧟 Initial Zombies',
+        survivors: '🏆 Final Survivors', start: '🎮 Start', infectionOrder: '🏆 Infection Order',
+        rankingPlaceholder: 'Start the game to see<br>the infection order',
+        copyResult: 'Copy Result', github: 'GitHub Repository', coffee: 'Buy Developer a Coffee ☕',
+        finalSurvivor: 'Final Survivor!', survivalTime: 'Survival Time: {time}s', confirm: 'OK',
+        helpTitle: '🧟 Zombie Arena Game', helpRulesTitle: '🎮 Game Rules',
+        helpRules: 'Participants survive in the arena while avoiding zombies. Game ends when only the final survivors remain!',
+        helpMovementTitle: '🏃 Movement System',
+        helpMovement: '• Humans sprint in opposite direction when spotting zombies<br>• Zombies have narrow but longer vision than humans<br>• Initial zombies die after one bite',
+        helpShrinkTitle: '🔥 Zone Shrinking',
+        helpShrink: '• The zone shrinks over time<br>• When zombies exceed 10, oldest zombies starve to death',
+        understood: 'Got it!', copied: '📋 Result copied!', copyFailed: '❌ Copy failed',
+        minParticipants: 'At least 2 participants required!',
+        survivorError: 'Final survivors must be less than total participants!',
+        initialZombie: 'Initial Zombie', infected: 'Infected', zoneOut: 'Out of Zone', survivor: 'Alive', winner: 'Winner!',
+        resultTitle: '🧟 Zombie Arena Result 🧟', gameTime: '⏱️ Game Time: {time}s',
+        finalSurvivors: '🏆 Final Survivors', infectionOrderResult: '💀 Infection Order',
+        zombieNames: ['Zombie A','Zombie B','Zombie C','Zombie D','Zombie E','Zombie F','Zombie G','Zombie H','Zombie I','Zombie J'],
+        shrinkWarning: '⚠️ Zone Shrinking!',
+        infectMessage: '{attacker} bit {victim} and turned them into a zombie!',
+        zombieDied: '{name} starved to death.', zoneOutMessage: '{name} was pushed out of the zone!'
+    },
+    zh: {
+        title: '僵尸竞技场', participants: '参与者名单',
+        participantsPlaceholder: '输入姓名\n例：小明，小红，小刚',
+        hint: '用逗号或换行分隔', initialZombies: '🧟 初始僵尸数',
+        survivors: '🏆 最终幸存者数', start: '🎮 开始', infectionOrder: '🏆 感染顺序',
+        rankingPlaceholder: '开始游戏后<br>将显示感染顺序',
+        copyResult: '复制结果', github: 'GitHub 仓库', coffee: '请开发者喝咖啡 ☕',
+        finalSurvivor: '最后的幸存者！', survivalTime: '生存时间：{time}秒', confirm: '确定',
+        helpTitle: '🧟 僵尸竞技场游戏', helpRulesTitle: '🎮 游戏规则',
+        helpRules: '参与者在竞技场中躲避僵尸生存。当只剩下最终幸存者数量时游戏结束！',
+        helpMovementTitle: '🏃 移动系统',
+        helpMovement: '• 人类看到僵尸时会向相反方向冲刺<br>• 僵尸视野窄但比人类看得远<br>• 初始僵尸咬一次后会死亡',
+        helpShrinkTitle: '🔥 区域缩小',
+        helpShrink: '• 随时间推移区域会缩小<br>• 僵尸超过10只时，最老的僵尸会饿死',
+        understood: '明白了！', copied: '📋 结果已复制！', copyFailed: '❌ 复制失败',
+        minParticipants: '至少需要2名参与者！', survivorError: '最终幸存者数必须少于参与者总수！',
+        initialZombie: '初始僵尸', infected: '感染', zoneOut: '离开区域', survivor: '存活', winner: '胜利！',
+        resultTitle: '🧟 僵尸竞技场结果 🧟', gameTime: '⏱️ 游戏时间：{time}秒',
+        finalSurvivors: '🏆 最终幸存者', infectionOrderResult: '💀 感染顺序',
+        zombieNames: ['僵尸A','僵尸B','僵尸C','僵尸D','僵尸E','僵尸F','僵尸G','僵尸H','僵尸I','僵尸J'],
+        shrinkWarning: '⚠️ 区域缩小！',
+        infectMessage: '{attacker}咬了{victim}，把他变成了僵尸！',
+        zombieDied: '{name}饿死了。', zoneOutMessage: '{name}被推出了区域！'
+    }
+};
+
+let currentLang = 'ko';
+
+function detectLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    const lang = browserLang.split('-')[0].toLowerCase();
+    return i18n[lang] ? lang : 'en';
+}
+
+function t(key, params = {}) {
+    let text = i18n[currentLang][key] || i18n['en'][key] || key;
+    Object.keys(params).forEach(k => { text = text.replace('{' + k + '}', params[k]); });
+    return text;
+}
+
+function updateUI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = t(el.getAttribute('data-i18n')));
+    document.querySelectorAll('[data-placeholder-i18n]').forEach(el => el.placeholder = t(el.getAttribute('data-placeholder-i18n')));
+    document.querySelectorAll('[data-tooltip-i18n]').forEach(el => el.setAttribute('data-tooltip', t(el.getAttribute('data-tooltip-i18n'))));
+    document.getElementById('shrinkWarning').textContent = t('shrinkWarning');
+}
+
+class ZombieSurvival {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.participants = []; this.entities = []; this.deadZombies = [];
+        this.infectedOrder = []; this.notifications = [];
+        this.isRunning = false; this.gameStarted = false;
+        this.startTime = 0; this.endTime = 0;
+        this.gameTimeSeconds = 0;
+        this.lastTimestamp = 0;
+        this.zombieCount = 3; this.survivorCount = 1;
+        this.entityRadius = 10; this.maxZombies = 10;
+        this.humanWalkSpeed = 0.6; this.humanRunSpeed = 3.75;
+        this.zombieWalkSpeed = 0.5; this.zombieChaseSpeed = 3.0;
+        this.humanFovAngle = 140; this.zombieFovAngle = 80;
+        this.zombieDetectRange = 250;
+        this.humanDetectRange = this.zombieDetectRange * 0.9; // 인간은 좀비의 90%
+        this.runDuration = 60;
+        this.humanEmojis = ['😀','😊','😎','🤓','😃','😁','🥳','😺','🐶','🐱','🦊','🐻'];
+        this.centerX = 0; this.centerY = 0; this.currentRadius = 0;
+        this.targetRadius = 0; this.targetCenterX = 0; this.targetCenterY = 0;
+        this.shrinkPhase = 0; this.shrinkTimer = 0;
+        this.shrinkInterval = 600; this.shrinkWarningTime = 180; this.isShrinking = false;
+        this.sound = new SoundManager();
+        // Load zombie images (3 types)
+        this.zombieImages = [];
+        this.zombieImagesLoaded = [false, false, false];
+        for (let i = 0; i < 3; i++) {
+            const img = new Image();
+            img.src = `zombie_0${i + 1}.png`;
+            const idx = i;
+            img.onload = () => { this.zombieImagesLoaded[idx] = true; this.draw(); };
+            this.zombieImages.push(img);
+        }
+        this.setupCanvas(); this.bindEvents();
+    }
+    
+    get zombieNames() { return t('zombieNames'); }
+    
+    setupCanvas() {
+        const wrapper = this.canvas.parentElement;
+        this.canvas.width = wrapper.clientWidth; this.canvas.height = wrapper.clientHeight;
+        this.centerX = this.canvas.width / 2; this.centerY = this.canvas.height / 2;
+        this.currentRadius = Math.min(this.canvas.width, this.canvas.height) / 2 - 15;
+        this.targetRadius = this.currentRadius;
+        this.targetCenterX = this.centerX; this.targetCenterY = this.centerY;
+    }
+    
+    bindEvents() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const oldW = this.canvas.width, oldH = this.canvas.height;
+                this.setupCanvas();
+                if (!this.isRunning) this.redistributeEntities(oldW, oldH);
+                this.draw();
+            }, 100);
+        });
+    }
+    
+    redistributeEntities(oldW, oldH) {
+        const scaleX = this.canvas.width / oldW, scaleY = this.canvas.height / oldH;
+        for (const e of this.entities) { e.x *= scaleX; e.y *= scaleY; }
+    }
+    
+    setParticipants(names) { this.participants = names.filter(n => n.trim()); this.reset(); }
+    
+    reset() {
+        this.isRunning = false; this.gameStarted = false;
+        this.entities = []; this.deadZombies = []; this.infectedOrder = []; this.notifications = [];
+        this.startTime = 0; this.endTime = 0;
+        this.gameTimeSeconds = 0;
+        this.lastTimestamp = 0;
+        this.shrinkPhase = 0; this.shrinkTimer = 0; this.isShrinking = false;
+        this.setupCanvas(); this.setupEntities(false);
+        this.draw(); this.updateUI(); this.updateRanking();
+        document.getElementById('shrinkWarning').style.display = 'none';
+        document.getElementById('timerDisplay').textContent = '00:00';
+    }
+    
+    setupEntities(includeZombies = true) {
+        this.entities = [];
+        const shuffled = [...this.participants].sort(() => Math.random() - 0.5);
+        const totalCount = includeZombies ? shuffled.length + this.zombieCount : shuffled.length;
+        const positions = this.generateSpacedPositions(totalCount);
+        
+        for (let i = 0; i < shuffled.length; i++) {
+            this.entities.push({
+                name: shuffled[i], x: positions[i].x, y: positions[i].y, vx: 0, vy: 0,
+                angle: Math.random() * Math.PI * 2, isZombie: false, isRunning: false, runTimer: 0,
+                emoji: this.humanEmojis[i % this.humanEmojis.length],
+                targetAngle: Math.random() * Math.PI * 2, wanderTimer: Math.random() * 120,
+                hasTarget: false, isInitialZombie: false, health: 100,
+                isTransforming: false, transformTimer: 0, eatingTimer: 0, zombieKills: 0,
+                zombifiedAt: 0, helpTimer: 0, spottedTimer: 0
+            });
+        }
+        
+        if (includeZombies) {
+            for (let i = 0; i < this.zombieCount; i++) {
+                const pos = positions[shuffled.length + i];
+                this.entities.push({
+                    name: this.zombieNames[i] || ('Zombie ' + (i+1)),
+                    x: pos.x, y: pos.y, vx: 0, vy: 0, angle: Math.random() * Math.PI * 2,
+                    isZombie: true, isRunning: false, runTimer: 0, color: '#666',
+                    targetAngle: Math.random() * Math.PI * 2, wanderTimer: Math.random() * 120,
+                    hasTarget: false, isInitialZombie: true, health: 100,
+                    isTransforming: false, transformTimer: 0, eatingTimer: 0, zombieKills: 0,
+                    zombifiedAt: 0, helpTimer: 0, spottedTimer: 0,
+                    zombieImageIndex: i % 3 // 순서대로 좀비 이미지 (0, 1, 2, 0, 1, 2, ...)
+                });
+            }
+        }
+    }
+    
+    generateSpacedPositions(count) {
+        const positions = [], padding = 30;
+        for (let i = 0; i < count; i++) {
+            let bestPos = null, bestMinDist = 0;
+            for (let attempt = 0; attempt < 50; attempt++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * (this.currentRadius - padding);
+                const pos = { x: this.centerX + Math.cos(angle) * dist, y: this.centerY + Math.sin(angle) * dist };
+                let minDistToOthers = Infinity;
+                for (const other of positions) {
+                    const dx = pos.x - other.x, dy = pos.y - other.y;
+                    minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dx*dx + dy*dy));
+                }
+                if (minDistToOthers > bestMinDist) { bestMinDist = minDistToOthers; bestPos = pos; }
+                if (minDistToOthers >= 50) break;
+            }
+            positions.push(bestPos || { x: this.centerX + (Math.random()-0.5)*this.currentRadius, y: this.centerY + (Math.random()-0.5)*this.currentRadius });
+        }
+        return positions;
+    }
+    
+    addNotification(message) { this.notifications.push({ text: message, timer: 180, opacity: 1 }); }
+    
+    updateNotifications(dtScale) {
+        for (let i = this.notifications.length - 1; i >= 0; i--) {
+            this.notifications[i].timer -= dtScale;
+            if (this.notifications[i].timer < 30) this.notifications[i].opacity = Math.max(0, this.notifications[i].timer / 30);
+            if (this.notifications[i].timer <= 0) this.notifications.splice(i, 1);
+        }
+        while (this.notifications.length > 5) this.notifications.shift();
+    }
+    
+    start() {
+        if (this.participants.length < 2) { alert(t('minParticipants')); return; }
+        this.sound.init();
+        this.reset(); this.setupEntities(true);
+        this.gameStarted = true; this.isRunning = true;
+        this.startTime = Date.now(); this.endTime = 0;
+        this.gameTimeSeconds = 0;
+        this.lastTimestamp = performance.now();
+        this.setControlsDisabled(true); this.draw();
+        this.sound.playStart();
+        requestAnimationFrame((ts) => this.gameLoop(ts));
+    }
+    
+    stop() { this.isRunning = false; this.setControlsDisabled(false); }
+    
+    setControlsDisabled(disabled) {
+        document.getElementById('zombieCount').disabled = disabled;
+        document.getElementById('survivorCount').disabled = disabled;
+    }
+    
+    gameLoop(timestamp) {
+        if (!this.isRunning) return;
+        
+        const dt = (timestamp - this.lastTimestamp) / 1000;
+        this.lastTimestamp = timestamp;
+        
+        // Limit dt to prevent massive jumps when tab is inactive
+        const cappedDt = Math.min(dt, 0.1);
+        
+        this.update(cappedDt); this.draw(); this.updateUI();
+        const humans = this.entities.filter(e => !e.isZombie && !e.isTransforming);
+        if (humans.length <= this.survivorCount && this.isRunning) { this.endGame(humans); return; }
+        requestAnimationFrame((ts) => this.gameLoop(ts));
+    }
+    
+    getWallAvoidanceAngle(entity) {
+        const dx = entity.x - this.centerX, dy = entity.y - this.centerY;
+        const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+        if (this.currentRadius - distFromCenter < 50) return Math.atan2(-dy, -dx);
+        return null;
+    }
+    
+    getEscapeAngle(human, zombie) {
+        const dx = human.x - zombie.x, dy = human.y - zombie.y;
+        let escapeAngle = Math.atan2(dy, dx);
+        const targetX = human.x + Math.cos(escapeAngle) * 100;
+        const targetY = human.y + Math.sin(escapeAngle) * 100;
+        const targetDist = Math.sqrt(Math.pow(targetX - this.centerX, 2) + Math.pow(targetY - this.centerY, 2));
+        
+        if (targetDist > this.currentRadius - 20) {
+            const toCenter = Math.atan2(this.centerY - human.y, this.centerX - human.x);
+            const cross = dx * (this.centerY - human.y) - dy * (this.centerX - human.x);
+            escapeAngle = toCenter + (cross > 0 ? Math.PI / 2 : -Math.PI / 2);
+        }
+        return escapeAngle + (Math.random() - 0.5) * 0.3;
+    }
+    
+    update(dt) {
+        const dtScale = dt * 60; // Scale based on 60fps
+        this.gameTimeSeconds += dt;
+        
+        this.updateShrinking(dt); this.updateTransformations(dtScale);
+        this.updateNotifications(dtScale); this.updateDeadZombies(dtScale);
+        
+        const humans = this.entities.filter(e => !e.isZombie && !e.isTransforming);
+        const zombies = this.entities.filter(e => e.isZombie);
+        this.checkZombieLimit();
+        
+        for (const entity of this.entities) {
+            if (entity.isTransforming) continue;
+            if (entity.helpTimer > 0) entity.helpTimer -= dtScale;
+            if (entity.spottedTimer > 0) entity.spottedTimer -= dtScale;
+            if (entity.eatingTimer > 0) { entity.eatingTimer -= dtScale; entity.vx = 0; entity.vy = 0; continue; }
+            
+            if (entity.isZombie) this.updateZombie(entity, humans, dtScale);
+            else this.updateHuman(entity, zombies, dtScale);
+            
+            entity.x += entity.vx * dtScale; entity.y += entity.vy * dtScale;
+            // Use Math.pow for consistent friction regardless of dt
+            const friction = Math.pow(0.95, dtScale);
+            entity.vx *= friction; entity.vy *= friction;
+            
+            const dx = entity.x - this.centerX, dy = entity.y - this.centerY;
+            const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+            const maxDist = this.currentRadius - this.entityRadius;
+            
+            if (distFromCenter > maxDist) {
+                const angle = Math.atan2(dy, dx);
+                entity.x = this.centerX + Math.cos(angle) * maxDist;
+                entity.y = this.centerY + Math.sin(angle) * maxDist;
+                const normalX = dx / distFromCenter, normalY = dy / distFromCenter;
+                const dot = entity.vx * normalX + entity.vy * normalY;
+                entity.vx -= 2 * dot * normalX * 0.5; entity.vy -= 2 * dot * normalY * 0.5;
+            }
+        }
+        this.checkInfections(humans, zombies); this.handleCollisions(dtScale);
+    }
+    
+    checkZombieLimit() {
+        const zombies = this.entities.filter(e => e.isZombie && !e.isInitialZombie);
+        if (zombies.length > this.maxZombies) {
+            zombies.sort((a, b) => a.zombifiedAt - b.zombifiedAt);
+            const toKill = zombies.length - this.maxZombies;
+            for (let i = 0; i < toKill; i++) {
+                const zombie = zombies[i];
+                this.sound.playDeath();
+                this.addNotification(t('zombieDied', { name: zombie.name }));
+                this.deadZombies.push({ ...zombie, fadeTimer: 60 });
+                const idx = this.entities.indexOf(zombie);
+                if (idx > -1) this.entities.splice(idx, 1);
+            }
+        }
+    }
+    
+    updateDeadZombies(dtScale) {
+        for (let i = this.deadZombies.length - 1; i >= 0; i--) {
+            this.deadZombies[i].fadeTimer -= dtScale;
+            if (this.deadZombies[i].fadeTimer <= 0) this.deadZombies.splice(i, 1);
+        }
+    }
+    
+    updateTransformations(dtScale) {
+        for (const entity of this.entities) {
+            if (entity.isTransforming) {
+                entity.transformTimer -= dtScale;
+                if (entity.transformTimer <= 0) {
+                    entity.isTransforming = false; entity.isZombie = true;
+                    entity.color = '#666'; entity.hasTarget = false;
+                    entity.wanderTimer = 60; entity.zombifiedAt = this.gameTimeSeconds;
+                }
+            }
+        }
+    }
+    
+    startTransformation(entity, cause, infector = null) {
+        if (entity.isTransforming || entity.isZombie) return;
+        entity.isTransforming = true; entity.transformTimer = 60;
+        entity.vx = 0; entity.vy = 0;
+
+        if (infector) {
+            this.sound.playInfect();
+            // 공격자의 좀비 이미지 인덱스를 계승
+            entity.zombieImageIndex = infector.zombieImageIndex;
+            infector.eatingTimer = 30; infector.vx = 0; infector.vy = 0; infector.zombieKills++;
+            this.addNotification(t('infectMessage', { attacker: infector.name, victim: entity.name }));
+
+            if (infector.isInitialZombie && infector.zombieKills >= 1) {
+                const inf = infector;
+                setTimeout(() => {
+                    this.deadZombies.push({ ...inf, fadeTimer: 60 });
+                    const idx = this.entities.indexOf(inf);
+                    if (idx > -1) this.entities.splice(idx, 1);
+                }, 500);
+            }
+        } else {
+            // 감염자가 없는 경우 (영역 이탈 등) 랜덤 이미지
+            entity.zombieImageIndex = Math.floor(Math.random() * 3);
+        }
+        this.infectedOrder.push({ name: entity.name, time: this.gameTimeSeconds * 1000, cause: cause });
+        this.updateRanking();
+    }
+    
+    updateShrinking(dt) {
+        const dtScale = dt * 60;
+        this.shrinkTimer += dtScale;
+        const warning = document.getElementById('shrinkWarning');
+        if (this.shrinkTimer > this.shrinkInterval - this.shrinkWarningTime && this.shrinkTimer < this.shrinkInterval) {
+            warning.style.display = 'block';
+            if (Math.floor(this.shrinkTimer) % 60 === 0) this.sound.playShrink();
+        } else { warning.style.display = 'none'; }
+        
+        if (this.shrinkTimer >= this.shrinkInterval) {
+            this.shrinkTimer = 0; this.shrinkPhase++;
+            const maxOffset = this.currentRadius * 0.3;
+            const offsetAngle = Math.random() * Math.PI * 2;
+            const offsetDist = Math.random() * maxOffset;
+            this.targetCenterX = this.centerX + Math.cos(offsetAngle) * offsetDist;
+            this.targetCenterY = this.centerY + Math.sin(offsetAngle) * offsetDist;
+            const minRadius = Math.min(50, this.currentRadius * 0.5);
+            const shrinkAmount = Math.min(30 + this.shrinkPhase * 15, this.currentRadius * 0.3);
+            this.targetRadius = Math.max(minRadius, this.currentRadius - shrinkAmount);
+            const margin = this.targetRadius + 10;
+            this.targetCenterX = Math.max(margin, Math.min(this.canvas.width - margin, this.targetCenterX));
+            this.targetCenterY = Math.max(margin, Math.min(this.canvas.height - margin, this.targetCenterY));
+            this.isShrinking = true;
+        }
+        
+        if (this.isShrinking) {
+            const lerpFactor = 1 - Math.pow(0.984, dtScale); // Approximately 0.016 per frame at 60fps
+            this.centerX += (this.targetCenterX - this.centerX) * lerpFactor;
+            this.centerY += (this.targetCenterY - this.centerY) * lerpFactor;
+            this.currentRadius += (this.targetRadius - this.currentRadius) * lerpFactor;
+            if (Math.abs(this.currentRadius - this.targetRadius) < 1) {
+                this.currentRadius = this.targetRadius;
+                this.centerX = this.targetCenterX; this.centerY = this.targetCenterY;
+                this.isShrinking = false;
+            }
+        }
+    }
+    
+    isInFieldOfView(viewer, target, fovAngle) {
+        const dx = target.x - viewer.x, dy = target.y - viewer.y;
+        const angleToTarget = Math.atan2(dy, dx);
+        let angleDiff = angleToTarget - viewer.angle;
+        while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+        while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+        return Math.abs(angleDiff) < (fovAngle / 2) * (Math.PI / 180);
+    }
+    
+    updateZombie(zombie, humans, dtScale) {
+        if (humans.length === 0) return;
+        const wallAngle = this.getWallAvoidanceAngle(zombie);
+        if (wallAngle !== null && !zombie.hasTarget) zombie.targetAngle = wallAngle;
+        
+        let closestVisible = null, closestVisibleDist = Infinity;
+        for (const human of humans) {
+            const dx = human.x - zombie.x, dy = human.y - zombie.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < this.zombieDetectRange && this.isInFieldOfView(zombie, human, this.zombieFovAngle)) {
+                if (dist < closestVisibleDist) { closestVisibleDist = dist; closestVisible = human; }
+            }
+        }
+        
+        if (closestVisible) {
+            // 처음 발견했을 때 ❗❗ 이모지 표시
+            if (!zombie.hasTarget) {
+                zombie.spottedTimer = 60; // 1초 동안 표시
+            }
+            zombie.hasTarget = true;
+            const dx = closestVisible.x - zombie.x, dy = closestVisible.y - zombie.y;
+            const targetAngle = Math.atan2(dy, dx);
+            let angleDiff = targetAngle - zombie.angle;
+            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+            while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+            zombie.angle += angleDiff * (1 - Math.pow(0.88, dtScale)); // Approx 0.12 per frame at 60fps
+            zombie.vx = Math.cos(zombie.angle) * this.zombieChaseSpeed;
+            zombie.vy = Math.sin(zombie.angle) * this.zombieChaseSpeed;
+        } else {
+            zombie.hasTarget = false; zombie.wanderTimer -= dtScale;
+            zombie.spottedTimer = 0;
+            if (zombie.wanderTimer <= 0) {
+                zombie.targetAngle = wallAngle !== null ? wallAngle : Math.random() * Math.PI * 2;
+                zombie.wanderTimer = 60 + Math.random() * 120;
+            }
+            let angleDiff = zombie.targetAngle - zombie.angle;
+            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+            while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+            zombie.angle += angleDiff * (1 - Math.pow(0.97, dtScale)); // Approx 0.03 per frame at 60fps
+            zombie.vx = Math.cos(zombie.angle) * this.zombieWalkSpeed;
+            zombie.vy = Math.sin(zombie.angle) * this.zombieWalkSpeed;
+        }
+    }
+    
+    updateHuman(human, zombies, dtScale) {
+        if (human.runTimer > 0) human.runTimer -= dtScale;
+        const wallAngle = this.getWallAvoidanceAngle(human);
+        if (wallAngle !== null && !human.isRunning) human.targetAngle = wallAngle;
+        
+        let nearestVisibleZombie = null, nearestDist = Infinity;
+        for (const zombie of zombies) {
+            const dx = zombie.x - human.x, dy = zombie.y - human.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < this.humanDetectRange && this.isInFieldOfView(human, zombie, this.humanFovAngle)) {
+                if (dist < nearestDist) { nearestDist = dist; nearestVisibleZombie = zombie; }
+            }
+        }
+        
+        if (nearestVisibleZombie) {
+            // 처음 발견했을 때 ❕❕ 이모지 표시
+            if (!human.isRunning) {
+                human.spottedTimer = 60; // 1초 동안 표시
+            }
+            human.angle = this.getEscapeAngle(human, nearestVisibleZombie);
+            human.runTimer = this.runDuration; human.isRunning = true; human.helpTimer = 45;
+        }
+        
+        if (human.runTimer > 0) {
+            human.isRunning = true;
+            human.vx = Math.cos(human.angle) * this.humanRunSpeed;
+            human.vy = Math.sin(human.angle) * this.humanRunSpeed;
+        } else {
+            human.isRunning = false; human.wanderTimer -= dtScale;
+            if (human.wanderTimer <= 0) {
+                human.targetAngle = wallAngle !== null ? wallAngle : Math.random() * Math.PI * 2;
+                human.wanderTimer = 60 + Math.random() * 120;
+            }
+            let angleDiff = human.targetAngle - human.angle;
+            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+            while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+            human.angle += angleDiff * (1 - Math.pow(0.96, dtScale)); // Approx 0.04 per frame at 60fps
+            human.vx = Math.cos(human.angle) * this.humanWalkSpeed;
+            human.vy = Math.sin(human.angle) * this.humanWalkSpeed;
+        }
+    }
+    
+    checkInfections(humans, zombies) {
+        for (const human of humans) {
+            for (const zombie of zombies) {
+                if (zombie.eatingTimer > 0) continue;
+                const dx = human.x - zombie.x, dy = human.y - zombie.y;
+                if (Math.sqrt(dx*dx + dy*dy) < this.entityRadius * 2.2) {
+                    this.startTransformation(human, t('infected'), zombie);
+                }
+            }
+        }
+    }
+    
+    handleCollisions(dtScale) {
+        for (let i = 0; i < this.entities.length; i++) {
+            for (let j = i + 1; j < this.entities.length; j++) {
+                const a = this.entities[i], b = this.entities[j];
+                if (a.isZombie !== b.isZombie) continue;
+                const dx = b.x - a.x, dy = b.y - a.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                const minDist = this.entityRadius * 2.2;
+                if (dist < minDist && dist > 0) {
+                    const overlap = (minDist - dist) / 2;
+                    const nx = dx / dist, ny = dy / dist;
+                    const correction = overlap * 0.5 * Math.min(1, dtScale);
+                    a.x -= nx * correction; a.y -= ny * correction;
+                    b.x += nx * correction; b.y += ny * correction;
+                }
+            }
+        }
+    }
+    
+    draw() {
+        const ctx = this.ctx;
+        ctx.fillStyle = '#0a0f0a'; ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.15)'; ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        ctx.save();
+        ctx.beginPath(); ctx.arc(this.centerX, this.centerY, this.currentRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#111a11'; ctx.fill(); ctx.clip();
+        ctx.strokeStyle = 'rgba(100, 255, 100, 0.08)'; ctx.lineWidth = 1;
+        for (let x = 0; x < this.canvas.width; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, this.canvas.height); ctx.stroke(); }
+        for (let y = 0; y < this.canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(this.canvas.width, y); ctx.stroke(); }
+        ctx.restore();
+        
+        ctx.beginPath(); ctx.arc(this.centerX, this.centerY, this.currentRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = this.isShrinking ? '#ff4444' : 'rgba(100, 255, 100, 0.5)';
+        ctx.lineWidth = this.isShrinking ? 4 : 2; ctx.stroke();
+        
+        if (this.shrinkTimer > this.shrinkInterval - this.shrinkWarningTime) {
+            ctx.beginPath(); ctx.arc(this.targetCenterX, this.targetCenterY, this.targetRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255, 100, 100, 0.5)'; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
+        }
+        
+        for (const dead of this.deadZombies) this.drawDeadZombie(dead);
+        const humans = this.entities.filter(e => !e.isZombie);
+        const zombies = this.entities.filter(e => e.isZombie);
+        for (const e of humans) this.drawEntity(e);
+        for (const e of zombies) this.drawEntity(e);
+        this.drawNotifications();
+    }
+    
+    drawDeadZombie(dead) {
+        const ctx = this.ctx, alpha = dead.fadeTimer / 60;
+        const zombieImgSize = this.entityRadius * 3 * 1.5; // 좀비 크기 1.5배
+        const imgIndex = dead.zombieImageIndex || 0;
+        ctx.save(); ctx.globalAlpha = alpha * 0.5;
+        ctx.translate(dead.x, dead.y);
+        // 쓰러진 좀비 이미지 (회전하고 반투명하게)
+        ctx.rotate(Math.PI / 2); // 옆으로 쓰러진 모습
+        if (this.zombieImagesLoaded[imgIndex]) {
+            ctx.drawImage(this.zombieImages[imgIndex], -zombieImgSize/2, -zombieImgSize/2, zombieImgSize, zombieImgSize);
+        } else {
+            ctx.font = zombieImgSize + 'px serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('🧟', 0, 0);
+        }
+        ctx.restore();
+    }
+    
+    drawNotifications() {
+        const ctx = this.ctx, startX = this.canvas.width - 10, startY = 10;
+        ctx.textAlign = 'right'; ctx.font = 'bold 12px "Noto Sans KR"';
+        this.notifications.forEach((notif, idx) => {
+            const y = startY + idx * 25; ctx.globalAlpha = notif.opacity;
+            ctx.fillStyle = '#ff6666';
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'; ctx.lineWidth = 3;
+            ctx.strokeText(notif.text, startX - 5, y + 12);
+            ctx.fillText(notif.text, startX - 5, y + 12);
+        });
+        ctx.globalAlpha = 1; ctx.textAlign = 'left';
+    }
+    
+    drawEntity(entity) {
+        const ctx = this.ctx, x = entity.x, y = entity.y, r = this.entityRadius;
+        const baseImgSize = r * 3; // 기본 이미지/이모지 크기
+        const zombieScale = 1.5; // 좀비 크기 배율
+        ctx.save(); ctx.translate(x, y);
+
+        if (entity.isTransforming) {
+            const progress = 1 - (entity.transformTimer / 60);
+            // 크기가 1에서 1.5로 점점 커지는 효과 + 펄스 효과
+            const sizeScale = 1 + (zombieScale - 1) * progress;
+            const pulseScale = sizeScale + Math.sin(progress * Math.PI * 6) * 0.2;
+            ctx.scale(pulseScale, pulseScale);
+            const shake = (1 - progress) * 3;
+            ctx.translate(Math.random() * shake - shake/2, Math.random() * shake - shake/2);
+            // 변환 중에는 이모지가 점점 좀비로 변하는 효과
+            ctx.globalAlpha = 1 - progress;
+            ctx.font = baseImgSize + 'px serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(entity.emoji || '😵', 0, 0);
+            ctx.globalAlpha = progress;
+            const transformImgIndex = entity.zombieImageIndex || 0;
+            if (this.zombieImagesLoaded[transformImgIndex]) {
+                ctx.drawImage(this.zombieImages[transformImgIndex], -baseImgSize/2, -baseImgSize/2, baseImgSize, baseImgSize);
+            }
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = 'rgba(255,' + Math.floor(255 - progress * 255) + ',0,' + (0.8 - progress * 0.5) + ')';
+            ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, r + 8 + progress * 5, 0, Math.PI * 2 * progress); ctx.stroke();
+            ctx.restore();
+            const currentImgSize = baseImgSize * sizeScale;
+            ctx.font = 'bold ' + Math.max(12, r * 1.2) + 'px "Noto Sans KR"';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)'; ctx.lineWidth = 3;
+            ctx.strokeText(entity.name, x, y + currentImgSize/2 + 5);
+            ctx.fillStyle = '#ffaa00'; ctx.fillText(entity.name, x, y + currentImgSize/2 + 5);
+            return;
+        }
+
+        if (entity.isZombie) {
+            const zombieImgSize = baseImgSize * zombieScale; // 좀비는 1.5배 크기
+            if (entity.eatingTimer > 0) {
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                ctx.beginPath(); ctx.arc(0, 0, zombieImgSize/2 + 5, 0, Math.PI * 2); ctx.fill();
+            }
+            if (!entity.hasTarget && entity.eatingTimer <= 0) {
+                ctx.rotate(entity.angle);
+                const fovRad = (this.zombieFovAngle / 2) * (Math.PI / 180);
+                ctx.fillStyle = 'rgba(255, 50, 50, 0.08)';
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, this.zombieDetectRange, -fovRad, fovRad); ctx.closePath(); ctx.fill();
+                ctx.rotate(-entity.angle);
+            }
+            // 좀비 이미지 그리기 (1.5배 크기, 해당 이미지 인덱스 사용)
+            const imgIndex = entity.zombieImageIndex || 0;
+            if (this.zombieImagesLoaded[imgIndex]) {
+                ctx.drawImage(this.zombieImages[imgIndex], -zombieImgSize/2, -zombieImgSize/2, zombieImgSize, zombieImgSize);
+            } else {
+                // 이미지 로딩 전 폴백
+                ctx.font = zombieImgSize + 'px serif';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('🧟', 0, 0);
+            }
+        } else {
+            // 시야 범위 그리기
+            ctx.rotate(entity.angle);
+            const fovRad = (this.humanFovAngle / 2) * (Math.PI / 180);
+            ctx.fillStyle = 'rgba(255, 255, 100, 0.05)';
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, this.humanDetectRange, -fovRad, fovRad); ctx.closePath(); ctx.fill();
+            ctx.rotate(-entity.angle);
+            // 얼굴 이모지 그리기 (선명하게)
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = baseImgSize + 'px serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(entity.emoji || '😀', 0, 0);
+            // 달리는 중 표시
+            if (entity.isRunning) {
+                ctx.strokeStyle = '#ffff00'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.arc(0, 0, baseImgSize/2 + 3, 0, Math.PI * 2 * (entity.runTimer / this.runDuration)); ctx.stroke();
+            }
+        }
+        ctx.restore();
+
+        // 현재 엔티티의 실제 크기 계산
+        const currentSize = entity.isZombie ? baseImgSize * zombieScale : baseImgSize;
+
+        if (entity.helpTimer > 0 && !entity.isZombie) {
+            const shake = Math.sin(Date.now() / 30) * 3;
+            const helpY = y - currentSize/2 - 10 + shake, helpX = x + Math.sin(Date.now() / 50) * 2;
+            ctx.font = 'bold 14px "Noto Sans KR"'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+            ctx.shadowColor = 'rgba(255, 0, 0, 0.3)'; ctx.shadowBlur = 3;
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)'; ctx.lineWidth = 3; ctx.strokeText('Help!!', helpX, helpY);
+            ctx.fillStyle = '#ff4444'; ctx.fillText('Help!!', helpX, helpY);
+            ctx.shadowBlur = 0;
+        }
+
+        // 발견 이모지 표시 (❗ 좀비가 사람 발견, ❕ 사람이 좀비 발견)
+        if (entity.spottedTimer > 0) {
+            const spottedAlpha = Math.min(1, entity.spottedTimer / 30); // 페이드 아웃
+            const bounce = Math.sin(entity.spottedTimer * 0.3) * 3;
+            ctx.globalAlpha = spottedAlpha;
+            ctx.font = '24px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            const emoji = entity.isZombie ? '❗' : '❕';
+            ctx.fillText(emoji, x, y - currentSize/2 - 5 + bounce);
+            ctx.globalAlpha = 1;
+        }
+
+        ctx.font = 'bold ' + Math.max(12, r * 1.2) + 'px "Noto Sans KR"';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        const shortName = entity.name.length > 6 ? entity.name.slice(0, 5) + '..' : entity.name;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)'; ctx.lineWidth = 3; ctx.strokeText(shortName, x, y + currentSize/2 + 5);
+        ctx.fillStyle = entity.isZombie ? '#ff6666' : '#fff'; ctx.fillText(shortName, x, y + currentSize/2 + 5);
+    }
+    
+    endGame(winners) {
+        this.isRunning = false;
+        this.setControlsDisabled(false);
+        document.getElementById('shrinkWarning').style.display = 'none';
+        this.updateUI();
+        if (winners && winners.length > 0) {
+            this.sound.playWin();
+            const survivalTime = this.gameTimeSeconds.toFixed(1);
+            const winnerNames = winners.map(w => w.name).join(', ');
+            document.getElementById('winnerName').textContent = winnerNames;
+            document.getElementById('winnerStats').textContent = t('survivalTime', { time: survivalTime });
+            document.getElementById('winnerOverlay').classList.add('show');
+        }
+        this.updateRanking();
+    }
+    
+    updateRanking() {
+        const list = document.getElementById('rankingList');
+        if (this.infectedOrder.length === 0 && !this.isRunning) {
+            list.innerHTML = '<div class="ranking-placeholder">' + t('rankingPlaceholder') + '</div>'; return;
+        }
+        let html = '';
+        
+        // 생존자 먼저 (상단)
+        const survivors = this.entities.filter(e => !e.isZombie && !e.isTransforming);
+        survivors.forEach(survivor => {
+            const isWinner = survivors.length <= this.survivorCount && !this.isRunning;
+            html += '<div class="ranking-item ' + (isWinner ? 'winner' : 'survivor') + '"><span class="ranking-rank">' + (isWinner ? '🏆' : '🧑') + '</span><span class="ranking-name">' + survivor.name + '</span><span class="ranking-status">' + (isWinner ? t('winner') : t('survivor')) + '</span></div>';
+        });
+        
+        // 구분선
+        if (survivors.length > 0 && this.infectedOrder.length > 0) {
+            html += '<div class="ranking-divider"></div>';
+        }
+        
+        // 감염된 순서 (역순 - 최근 감염자가 위로)
+        const reversedInfected = [...this.infectedOrder].reverse();
+        reversedInfected.forEach((infected) => {
+            const originalIdx = this.infectedOrder.indexOf(infected);
+            const time = (infected.time / 1000).toFixed(1);
+            html += '<div class="ranking-item infected"><span class="ranking-rank">' + (originalIdx + 1) + '</span><span class="ranking-name">🧟 ' + infected.name + '</span><span class="ranking-status">' + time + 's</span></div>';
+        });
+        
+        // 초기 좀비 (최하단)
+        const initialZombies = this.entities.filter(e => e.isInitialZombie);
+        if (initialZombies.length > 0) {
+            html += '<div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 6px 0; padding-top: 6px; font-size: 0.6rem; color: #666;">' + t('initialZombie') + '</div>';
+            initialZombies.forEach(zombie => {
+                html += '<div class="ranking-item infected" style="opacity: 0.6;"><span class="ranking-rank">🧟</span><span class="ranking-name">' + zombie.name + '</span><span class="ranking-status">-</span></div>';
+            });
+        }
+        list.innerHTML = html;
+    }
+    
+    updateUI() {
+        const humans = this.entities.filter(e => !e.isZombie && !e.isTransforming);
+        const zombies = this.entities.filter(e => e.isZombie);
+        document.getElementById('humanCount').textContent = humans.length;
+        document.getElementById('zombieCountDisplay').textContent = zombies.length;
+        if (this.isRunning) {
+            const elapsed = Math.floor(this.gameTimeSeconds);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').textContent = minutes + ':' + seconds;
+        }
+    }
+    
+    getResultText() {
+        const endTimeToUse = this.endTime || Date.now();
+        const elapsed = this.startTime ? ((endTimeToUse - this.startTime) / 1000).toFixed(1) : 0;
+        let result = t('resultTitle') + '\n━━━━━━━━━━━━━━\n' + t('gameTime', { time: elapsed }) + '\n\n';
+        const survivors = this.entities.filter(e => !e.isZombie && !e.isTransforming);
+        if (survivors.length > 0) {
+            result += t('finalSurvivors') + '\n';
+            survivors.forEach(s => { result += '   ' + s.name + '\n'; });
+            result += '\n';
+        }
+        if (this.infectedOrder.length > 0) {
+            result += t('infectionOrderResult') + '\n';
+            this.infectedOrder.forEach((infected, idx) => {
+                const time = (infected.time / 1000).toFixed(1);
+                result += '   ' + (idx + 1) + '. ' + infected.name + ' (' + time + 's)\n';
+            });
+        }
+        result += '\n🎮 https://github.com/geniuskey/zombie-arena';
+        return result;
+    }
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message; toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    currentLang = localStorage.getItem('zombie-arena-lang') || detectLanguage();
+    document.getElementById('langSelect').value = currentLang;
+    updateUI18n();
+    
+    const canvas = document.getElementById('gameCanvas');
+    const game = new ZombieSurvival(canvas);
+    const participantsInput = document.getElementById('participants');
+    const zombieCountSlider = document.getElementById('zombieCount');
+    const zombieValueDisplay = document.getElementById('zombieValue');
+    const survivorCountSlider = document.getElementById('survivorCount');
+    const survivorValueDisplay = document.getElementById('survivorValue');
+    
+    document.getElementById('langSelect').addEventListener('change', (e) => {
+        currentLang = e.target.value;
+        localStorage.setItem('zombie-arena-lang', currentLang);
+        updateUI18n(); game.updateRanking();
+    });
+    
+    function parseParticipants(text) {
+        const names = text.split(/[,\n]/).map(n => n.trim()).filter(n => n);
+        const result = [];
+        const nameCount = {};
+        for (const name of names) {
+            const match = name.match(/^(.+)\*(\d+)$/);
+            if (match) {
+                const baseName = match[1].trim();
+                const count = parseInt(match[2]);
+                for (let i = 0; i < count; i++) {
+                    nameCount[baseName] = (nameCount[baseName] || 0) + 1;
+                    if (nameCount[baseName] === 1) {
+                        result.push(baseName);
+                    } else {
+                        result.push(`${baseName}(${nameCount[baseName]})`);
+                    }
+                }
+            } else {
+                nameCount[name] = (nameCount[name] || 0) + 1;
+                if (nameCount[name] === 1) {
+                    result.push(name);
+                } else {
+                    result.push(`${name}(${nameCount[name]})`);
+                }
+            }
+        }
+        return result;
+    }
+    function updateGame() { game.setParticipants(parseParticipants(participantsInput.value)); }
+    
+    participantsInput.addEventListener('input', () => {
+        updateGame();
+        localStorage.setItem('zombie-arena-participants', participantsInput.value);
+    });
+    
+    zombieCountSlider.addEventListener('input', () => {
+        zombieValueDisplay.textContent = zombieCountSlider.value;
+        game.zombieCount = parseInt(zombieCountSlider.value);
+        if (!game.isRunning) game.reset();
+    });
+    
+    survivorCountSlider.addEventListener('input', () => {
+        survivorValueDisplay.textContent = survivorCountSlider.value;
+        game.survivorCount = parseInt(survivorCountSlider.value);
+    });
+    
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const participants = parseParticipants(participantsInput.value);
+        if (participants.length < 2) { alert(t('minParticipants')); return; }
+        if (game.survivorCount >= participants.length) { alert(t('survivorError')); return; }
+        game.setParticipants(participants); game.start();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    document.getElementById('resetBtn').addEventListener('click', () => { game.stop(); game.reset(); });
+    document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('show'));
+    document.getElementById('closeHelpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.remove('show'));
+    document.getElementById('helpModal').addEventListener('click', (e) => { if (e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('show'); });
+    document.getElementById('closeWinnerBtn').addEventListener('click', () => document.getElementById('winnerOverlay').classList.remove('show'));
+    
+    document.getElementById('copyResultBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(game.getResultText()).then(() => showToast(t('copied'))).catch(() => showToast(t('copyFailed')));
+    });
+    
+    const saved = localStorage.getItem('zombie-arena-participants');
+    if (saved) { participantsInput.value = saved; updateGame(); }
+    
+    game.draw();
+});
+    </script>
+</body>
+</html>

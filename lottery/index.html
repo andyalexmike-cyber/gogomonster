@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFTNV73W8L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GFTNV73W8L');
+  </script>
+
+  <!-- 기본 SEO -->
+  <title>추첨 게임 포털 - 무료 온라인 추첨 게임 모음</title>
+  <meta name="description"
+    content="다양한 무료 온라인 추첨 게임을 즐기세요! 사다리 타기, 네온 레이스, 구슬 레이싱 등 15가지 재미있는 방식으로 공정한 추첨을 할 수 있습니다. 설치 없이 브라우저에서 바로 플레이!">
+  <meta name="keywords" content="추첨 게임, 무료 추첨, 온라인 추첨, 랜덤 선택, 당첨자 추첨, 제비뽑기, 사다리 게임, 사다리 타기, 룰렛, 뽑기, 추첨기">
+  <meta name="author" content="Euiyun Edwin Kim">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="추첨 게임 포탈 - 무료 온라인 추첨 게임 모음">
+  <meta property="og:description" content="다양한 무료 온라인 추첨 게임을 즐기세요! 사다리 타기, 구슬 레이싱 등 15가지 게임으로 재미있게 추첨하세요.">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="추첨 게임 포털 - 무료 온라인 추첨 게임 모음">
+  <meta name="twitter:description" content="다양한 무료 온라인 추첨 게임을 즐기세요! 사다리 타기부터 서바이벌까지 설치 없이 브라우저에서 바로 플레이!">
+  <meta name="twitter:image" content="https://geniuskey.github.io/lottery/og-image.png">
+
+  <!-- Canonical & Favicon -->
+  <link rel="canonical" href="https://geniuskey.github.io/lottery/">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.4);
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --green: #22c55e;
+      --orange: #f97316;
+      --yellow: #eab308;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #020617;
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* 주사위 커서 적용 */
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' style='font-size:30px'><text y='30'>🎲</text></svg>") 15 15, auto;
+    }
+
+    /* Animated Background */
+    .bg-container {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0;
+      background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      will-change: transform;
+    }
+    .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -50px; }
+    .orb-2 { width: 350px; height: 350px; background: var(--purple); bottom: 10%; left: -50px; }
+    .orb-3 { width: 300px; height: 300px; background: var(--pink); top: 30%; right: 10%; }
+
+    .mouse-glow {
+      position: fixed;
+      width: 1000px; height: 1000px; /* 더 크게 확장 */
+      background: radial-gradient(
+        circle, 
+        rgba(56, 189, 248, 0.07) 0%, 
+        rgba(56, 189, 248, 0.02) 40%, 
+        transparent 80% /* 경계선을 아주 옅게 처리 */
+      );
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      mix-blend-mode: screen; /* 더 부드러운 혼합 모드 */
+    }
+
+    .floating-emoji {
+      position: absolute;
+      top: -100px;
+      opacity: 0;
+      animation: float-down linear forwards;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes float-down {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10% { opacity: var(--base-opacity); }
+      90% { opacity: var(--base-opacity); }
+      100% { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Header */
+    header {
+      padding: 60px 20px 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0 0 15px;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-dice { font-size: 1.2em; -webkit-text-fill-color: initial; }
+
+    header .tagline {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Main */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 15px 80px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 25px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    /* 3-Column Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px; /* 간격 축소 */
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.45);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--card-accent, var(--accent));
+      background: rgba(30, 41, 59, 0.7); /* 배경을 더 선명하게 */
+      /* 조이스틱 커서 적용 */
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' style='font-size:60px'><text y='60'>🕹️</text></svg>") 30 30, pointer;
+      /* 주변에 퍼지는 네온 효과 및 내부 광채 추가 */
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 0 20px var(--card-bg),
+        inset 0 0 12px var(--card-bg);
+    }
+
+    .card:hover h3 {
+      color: var(--card-accent);
+    }
+
+    .card-header {
+      padding: 16px 16px 0; /* 베젤 두께 축소 */
+      display: flex;
+      align-items: center; /* 가로 정렬로 변경 */
+      gap: 12px;
+    }
+
+    .card-icon {
+      width: 44px; height: 44px; /* 크기 최적화 */
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      background: var(--card-bg, rgba(56, 189, 248, 0.25));
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .card:hover .card-icon { transform: scale(1.1) rotate(-5deg); }
+
+    .card h3 { margin: 0; font-size: 20px; font-weight: 700; color: #fff; text-align: left; flex: 1; }
+
+    .card-body {
+      padding: 10px 16px 16px; /* 베젤 두께 축소 */
+      flex-grow: 1;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* 두 줄로 제한 */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Card Colors */
+    .card.neon { --card-accent: #f472b6; --card-bg: rgba(244, 114, 182, 0.25); }
+    .card.marble { --card-accent: #38bdf8; --card-bg: rgba(56, 189, 248, 0.25); }
+    .card.zombie { --card-accent: #22c55e; --card-bg: rgba(34, 197, 94, 0.25); }
+    .card.rps { --card-accent: #f97316; --card-bg: rgba(249, 115, 22, 0.25); }
+    .card.bingo { --card-accent: #a855f7; --card-bg: rgba(168, 85, 247, 0.25); }
+    .card.chestnut { --card-accent: #eab308; --card-bg: rgba(234, 179, 8, 0.25); }
+    .card.disk { --card-accent: #ec4899; --card-bg: rgba(236, 72, 153, 0.25); }
+    .card.punch { --card-accent: #ef4444; --card-bg: rgba(239, 68, 68, 0.25); }
+    .card.chaser { --card-accent: #14b8a6; --card-bg: rgba(20, 184, 166, 0.25); }
+    .card.chair { --card-accent: #8b5cf6; --card-bg: rgba(139, 92, 246, 0.25); }
+    .card.bowling { --card-accent: #6366f1; --card-bg: rgba(99, 102, 241, 0.25); }
+    .card.ladder { --card-accent: #3b82f6; --card-bg: rgba(59, 130, 246, 0.25); }
+    .card.bomb { --card-accent: #f43f5e; --card-bg: rgba(244, 63, 94, 0.25); }
+    .card.roulette { --card-accent: #f59e0b; --card-bg: rgba(245, 158, 11, 0.25); }
+    .card.gravity { --card-accent: #8b5cf6; --card-bg: rgba(139, 92, 246, 0.25); }
+    .card.mugunghwa { --card-accent: #ff4b2b; --card-bg: rgba(255, 75, 43, 0.25); }
+    .card.devil { --card-accent: #9333ea; --card-bg: rgba(147, 51, 234, 0.25); }
+    .card.ufo { --card-accent: #00ffcc; --card-bg: rgba(0, 255, 204, 0.25); }
+    .card.balloon { --card-accent: #f9a8d4; --card-bg: rgba(249, 168, 212, 0.25); }
+    .card.dart { --card-accent: #f87171; --card-bg: rgba(248, 113, 113, 0.25); }
+    .card.space { --card-accent: #8b5cf6; --card-bg: rgba(139, 92, 246, 0.25); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 10;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* Mobile */
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      header { padding: 40px 15px 20px; }
+      header h1 { font-size: 24px; }
+      .card-header { padding: 12px 8px 0; gap: 6px; flex-direction: column; align-items: center; }
+      .card-icon { width: 36px; height: 36px; font-size: 20px; }
+      .card h3 { font-size: 12px; text-align: center; }
+      .card-body { display: none; } /* 모바일 극강의 컴팩트함을 위해 설명 숨김 유지 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-container">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+  </div>
+
+  <header>
+    <h1><span class="logo-dice">🎲</span> 추첨 게임 포털</h1>
+    <p class="tagline">클릭 한 번으로 도파민이 터지는 짜릿한 추첨의 순간 🎯✨<br>학교, 회사, 각종 행사부터 방송·스트리밍까지,<br>분위기를 단숨에 끌어올릴 수 있는 추첨 게임을 즐겨보세요
+  </header>
+
+  <main>
+    <h2 class="section-title">🕹️ 게임 선택</h2>
+    <section class="grid">
+      <a href="./neon-race/" class="card neon">
+        <div class="card-header"><div class="card-icon">🌌</div><h3>네온 레이스</h3></div>
+        <div class="card-body"><p>사이버펑크 도시를 가로지르는 화려한 레이싱! 네온 질주를 즐겨보세요.</p></div>
+      </a>
+
+      <a href="./marble-olympics/" class="card marble">
+        <div class="card-header"><div class="card-icon">🏅</div><h3>구슬 올림픽</h3></div>
+        <div class="card-body"><p>물리 엔진 기반의 박진감 넘치는 구슬 경주! 다양한 트랙에서 경쟁하세요.</p></div>
+      </a>
+
+      <a href="./zombie-arena/" class="card zombie">
+        <div class="card-header"><div class="card-icon">🧟</div><h3>좀비 아레나</h3></div>
+        <div class="card-body"><p>좀비들이 생존을 겨루는 배틀! 마지막까지 살아남는 좀비가 승리합니다.</p></div>
+      </a>
+
+      <a href="./school-dance/" class="card mugunghwa">
+        <div class="card-header"><div class="card-icon">💃</div><h3>교실에서 춤을!</h3></div>
+        <div class="card-body"><p>선생님 몰래 춤을 추세요! 뒤돌아볼 때 멈추지 못하면 탈락합니다.</p></div>
+      </a>
+
+      <a href="./group-rps/" class="card rps">
+        <div class="card-header"><div class="card-icon">✊</div><h3>단체 가위바위보</h3></div>
+        <div class="card-body"><p>빠르고 직관적인 대규모 가위바위보 서바이벌! 최후의 1인을 가립니다.</p></div>
+      </a>
+
+      <a href="./bingo/" class="card bingo">
+        <div class="card-header"><div class="card-icon">🎯</div><h3>빙고</h3></div>
+        <div class="card-body"><p>클래식 빙고의 현대적 재해석! 실시간으로 순위가 바뀌는 짜릿한 긴장감.</p></div>
+      </a>
+
+      <a href="./bomb/" class="card bomb">
+        <div class="card-header"><div class="card-icon">💣</div><h3>폭탄 돌리기</h3></div>
+        <div class="card-body"><p>폭탄이 터지기 전에 넘기세요! 긴박한 타이머와 화려한 폭발 효과.</p></div>
+      </a>
+
+      <a href="./roulette/" class="card roulette">
+        <div class="card-header"><div class="card-icon">🎡</div><h3>룰렛 추첨</h3></div>
+        <div class="card-body"><p>행운의 주인공은 누구? 화려한 애니메이션과 함께 당첨자를 선정하세요.</p></div>
+      </a>
+
+      <a href="./disk-shove/" class="card disk">
+        <div class="card-header"><div class="card-icon">🥏</div><h3>원판 밀치기</h3></div>
+        <div class="card-body"><p>원형 아레나에서 살아남으세요! 부스터로 상대를 밀어내는 쾌감.</p></div>
+      </a>
+
+      <a href="./chaser-survival/" class="card chaser">
+        <div class="card-header"><div class="card-icon">👊</div><h3>술래로부터 살아남기</h3></div>
+        <div class="card-body"><p>무시무시한 술래로부터 도망치세요! 끝까지 살아남는 스릴 만점 추첨.</p></div>
+      </a>
+
+      <a href="./devil-survival/" class="card devil">
+        <div class="card-header"><div class="card-icon">😈</div><h3>악마로부터 살아남기</h3></div>
+        <div class="card-body"><p>악마의 돌진을 피해 생존하세요! 스릴 넘치는 서바이벌 추첨 게임.</p></div>
+      </a>
+
+      <a href="./ufo-abduction/" class="card ufo">
+        <div class="card-header"><div class="card-icon">🛸</div><h3>UFO 납치</h3></div>
+        <div class="card-body"><p>외계인의 UFO를 피해 살아남으세요! 빔에 잡히면 납치당하는 서바이벌 게임.</p></div>
+      </a>
+
+      <a href="./space-race/" class="card space">
+        <div class="card-header"><div class="card-icon">🚀</div><h3>우주 경주</h3></div>
+        <div class="card-body"><p>소행성을 피하며 우주를 가로지르는 스릴 넘치는 우주선 레이스!</p></div>
+      </a>
+
+      <a href="./balloon-survival/" class="card balloon">
+        <div class="card-header"><div class="card-icon">🎈</div><h3>풍선 서바이벌</h3></div>
+        <div class="card-body"><p>하늘에 떠 있는 풍선이 하나씩 터집니다! 마지막까지 살아남으세요.</p></div>
+      </a>
+
+      <a href="./dart-tournament/" class="card dart">
+        <div class="card-header"><div class="card-icon">🎯</div><h3>다트 토너먼트</h3></div>
+        <div class="card-body"><p>다트를 던져 과녁을 맞추세요! 가장 높은 점수가 우승합니다.</p></div>
+      </a>
+
+      <a href="./punch-survival/" class="card punch">
+        <div class="card-header"><div class="card-icon">🥊</div><h3>펀치 서바이벌</h3></div>
+        <div class="card-body"><p>링 위에서 펼쳐지는 난타전! 체력이 다하기 전에 상대를 쓰러뜨리세요.</p></div>
+      </a>
+
+      <a href="./chair/" class="card chair">
+        <div class="card-header"><div class="card-icon">🪑</div><h3>의자 앉기</h3></div>
+        <div class="card-body"><p>음악이 멈추면 의자를 쟁탈하세요! 추억의 게임을 디지털로 즐겨보세요.</p></div>
+      </a>
+
+      <a href="./gravity-orbit/" class="card gravity">
+        <div class="card-header"><div class="card-icon">🪐</div><h3>중력 궤도</h3></div>
+        <div class="card-body"><p>중력장 속의 생존 드라마! 안정적인 궤도를 유지하며 살아남으세요.</p></div>
+      </a>
+
+      <a href="./chestnut-survival/" class="card chestnut">
+        <div class="card-header"><div class="card-icon">🌰</div><h3>밤송이 서바이벌</h3></div>
+        <div class="card-body"><p>하늘에서 떨어지는 밤송이를 피하세요! 물리 기반의 짜릿한 회피 액션.</p>
+      </div></a>
+
+      <a href="./bowling/" class="card bowling">
+        <div class="card-header"><div class="card-icon">🎳</div><h3>볼링 생존</h3></div>
+        <div class="card-body"><p>굴러오는 볼링공을 피하세요! 핀이 되어 살아남는 독특한 서바이벌.</p></div>
+      </a>
+
+      <a href="./ladder/" class="card ladder">
+        <div class="card-header"><div class="card-icon">🪜</div><h3>사다리 추첨</h3></div>
+        <div class="card-body"><p>운명의 결과를 확인하는 클래식 사다리 타기! 공정하고 재미있게 추첨하세요.</p></div>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 <a href="https://github.com/geniuskey/lottery">GeniusKey</a>. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const glow = document.getElementById('mouseGlow');
+    const bgContainer = document.querySelector('.bg-container');
+    const emojis = ['🎲', '🎯', '🏆', '⭐', '🎮', '🎪', '✨', '🌟', '💫', '🎉', '🥏', '🥊', '🪑', '🎳', '👊', '🪜'];
+
+    document.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    function createFloatingEmoji(isInitial = false) {
+      const emoji = document.createElement('div');
+      emoji.className = 'floating-emoji';
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      
+      const z = Math.random();
+      const size = 15 + (z * 35);
+      const opacity = 0.1 + (z * 0.2);
+      const duration = 10 + ((1 - z) * 15);
+      
+      emoji.style.left = Math.random() * 100 + '%';
+      emoji.style.fontSize = size + 'px';
+      emoji.style.setProperty('--base-opacity', opacity);
+      emoji.style.animationDuration = duration + 's';
+      
+      if (isInitial) {
+        emoji.style.animationDelay = -(Math.random() * duration) + 's';
+      }
+      
+      bgContainer.appendChild(emoji);
+      setTimeout(() => emoji.remove(), duration * 1000);
+    }
+
+    for (let i = 0; i < 15; i++) createFloatingEmoji(true);
+    setInterval(() => createFloatingEmoji(false), 2500);
+  </script>
+</body>
+</html>
